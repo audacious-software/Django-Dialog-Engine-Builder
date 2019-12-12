@@ -1,0 +1,26 @@
+{% extends 'builder_base.html' %}
+{% load static %}
+
+{% block 'page_title' %}Dashboard | Interaction Builder{% endblock %}
+
+{% block 'page_help' %}
+	<a href="#" class="material-icons mdc-top-app-bar__action-item" aria-label="Help" id="action_help">help</a>
+{% endblock %}
+
+{% block 'navigation_title' %}Dashboard{% endblock %}
+
+{% block 'main_content' %}
+	<div class="mdc-layout-grid">
+		<div class="mdc-layout-grid__inner">
+			<div class="mdc-layout-grid__cell" style="padding-bottom: 16px;">
+				<span class="mdc-typography--subtitle2">DASHBOARD</span>
+				
+				<p>God-Eye View Here. What should live here?</p>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block 'js_init' %}
+	<script data-main="{% static 'builder-js/js/app/home.js' %}" src="{% static 'builder-js/vendor/require.js' %}"></script>
+{% endblock %}
