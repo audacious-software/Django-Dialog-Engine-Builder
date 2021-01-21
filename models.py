@@ -2,15 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import json
-
-from django.contrib.postgres.fields import JSONField
 from django.db import models
-from django.urls import reverse
-from django.utils import timezone
-from django.utils.safestring import mark_safe
-
-from django_dialog_engine.models import Dialog
 
 class InteractionCard(models.Model):
     name = models.CharField(max_length=4096, unique=True)

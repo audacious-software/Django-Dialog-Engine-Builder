@@ -147,6 +147,8 @@ define(modules, function (mdc, Node) {
 
 				for (var i = 0; i < sourceNodes.length; i++) {
 					const sourceNode = sourceNodes[i];
+
+					$("#" + sourceNode["cardId"]).css("background-color", "#E0E0E0");
 				
 					sourceNode.onClick(function() {
 						me.loadNode(sourceNode.definition);    
@@ -200,7 +202,7 @@ define(modules, function (mdc, Node) {
             }
         }
 
-        chooseDestinationMenu(cardId) {
+        chooseDestinationMenu = function(cardId) {
             var me = this;
             var body = '';
 
@@ -289,8 +291,6 @@ define(modules, function (mdc, Node) {
 							event.stopPropagation();
 
 							var categoryName = $(event.currentTarget).attr("data-category-name");
-							
-							console.log("CAT: " + categoryName);
 
 							var icon = $(event.currentTarget).find(".destination_disclosure_icon").html();
 					
@@ -322,8 +322,6 @@ define(modules, function (mdc, Node) {
 				}
 
 				$(".builder-destination-item").hide();
-
-				window.dialogBuilder.allCardsSelect.selectedIndex = 0;
 			}, 500);
         }
 
@@ -338,8 +336,6 @@ define(modules, function (mdc, Node) {
                 handleEvent: function (event) {
                     if (event.detail.action == "add_card") {
                         var cardName = $("#add-card-name-value").val();
-                        
-                        console.log("NAME: " + cardName);
                         
                         var cardType = window.dialogBuilder.newCardSelect.value;
 
@@ -376,6 +372,9 @@ define(modules, function (mdc, Node) {
 						indices.push(i);
 					}
 				}
+				
+				console.log('TO DELETE:')
+				console.log(indices)
 			
 				indices.sort();
 				indices.reverse();
@@ -385,8 +384,11 @@ define(modules, function (mdc, Node) {
 					
 					console.log("removing " + index);
 				
-					this.definition = this.definition.splice(index, 1);
+					this.definition.splice(index, 1);
 				}
+
+				console.log('DEF:')
+				console.log(this.definition)
 			
 				this.loadNode(this.definition[0]);
 

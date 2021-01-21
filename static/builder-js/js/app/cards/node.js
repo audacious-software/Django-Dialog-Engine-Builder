@@ -33,6 +33,7 @@ define(modules, function (mdc) {
 				htmlString += '            <div class="mdc-menu mdc-menu-surface" id="' + this.cardId + '_menu">';
 				htmlString += '              <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical" tabindex="-1">';
 				htmlString += '                <li class="mdc-list-item" role="menuitem">';
+				htmlString += '                  <span class="mdc-list-item__ripple"></span>';
 				htmlString += '                  <span class="mdc-list-item__text">Delete&#8230;</span>';
 				htmlString += '                </li>';
 				htmlString += '              </ul>';
@@ -101,6 +102,7 @@ define(modules, function (mdc) {
 			});
 			
 			const menu = mdc.menu.MDCMenu.attachTo(document.getElementById(this.cardId + '_menu'));
+			menu.setFixedPosition(true);
 			
 			menu.listen("MDCMenu:selected", function (event) {
 				console.log(event.detail);

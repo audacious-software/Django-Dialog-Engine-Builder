@@ -2,17 +2,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from builtins import str # pylint: disable=redefined-builtin
 import json
 import os
 
+from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponse, Http404, FileResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import mark_safe
-from django.utils.text import slugify
-
-from django.contrib.admin.views.decorators import staff_member_required
 
 from django_dialog_engine.models import DialogScript
 
@@ -23,7 +22,7 @@ def builder_dialog(request, dialog): # pylint: disable=unused-argument
     context = {}
 
     context['dialog'] = DialogScript.objects.filter(pk=str(dialog)).first()
-    
+
     card_modules = []
 
     for card in InteractionCard.objects.filter(enabled=True):
@@ -36,7 +35,7 @@ def builder_dialog(request, dialog): # pylint: disable=unused-argument
             definition = json.loads(request.POST['definition'])
 
             context['dialog'].definition = definition
-        
+
         if 'name' in request.POST:
             context['dialog'].name = request.POST['name']
 
@@ -71,7 +70,7 @@ def builder_interaction_card(request, card): # pylint: disable=unused-argument
 @staff_member_required
 def builder_add_dialog(request): # pylint: disable=unused-argument
     dialog = DialogScript(name='New SMS EMA', created=timezone.now())
-    
+
     dialog.definition = [{
         "next_id": "echo-1",
         "type": "begin",
@@ -85,8 +84,8 @@ def builder_add_dialog(request): # pylint: disable=unused-argument
         "prompt": "Tell me something interesting.",
         "no_match": "prompt-1",
         "actions": [{
-        	"pattern": ".*",
-        	"action": "echo-2"
+            "pattern": ".*",
+            "action": "echo-2"
         }],
         "type": "branch-prompt",
         "id": "prompt-1"
@@ -98,8 +97,8 @@ def builder_add_dialog(request): # pylint: disable=unused-argument
     }, {
         "type": "end",
         "id": "dialog-end"
-    }]          
+    }]
 
     dialog.save()
-    
+
     return redirect('builder_dialog', dialog.pk)

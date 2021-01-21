@@ -20,7 +20,7 @@ requirejs.config({
 });
 
 requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function(mdc, dialog, Cookies, Node) {
-    var csrftoken = Cookies.get('csrftoken');
+	var csrftoken = $("[name=csrfmiddlewaretoken]").val();
 
     function csrfSafeMethod(method) {
         // these HTTP methods do not require CSRF protection
@@ -82,37 +82,6 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
         
         selectedDialog.addChangeListener(onDialogChanged);
 
-        $("#action_edit_sequence").off("click");
-
-        $("#action_edit_sequence").click(function(eventObj) {
-            eventObj.preventDefault();
-            
-            $("#edit-sequence-name-value").val(selectedDialog.getName());
-
-			window.dialogBuilder.editDialogModal.unlisten('MDCDialog:closed', editListener);
-
-            editListener = {
-                handleEvent: function (event) {
-                    if (event.detail.action == "update_sequence") {
-						var name = $("#edit-sequence-name-value").val();
-					
-						selectedDialog.name = name;
-						$(".mdc-top-app-bar__title").html(name);
-
-						window.dialogBuilder.reloadDialog();
-
-						$("#action_save").show();
-				
-						window.dialogBuilder.editDialogModal.unlisten('MDCDialog:closed', this);
-                   }
-                }
-            };
-            
-            window.dialogBuilder.editDialogModal.listen('MDCDialog:closed', editListener);
-           
-            window.dialogBuilder.editDialogModal.open()
-        });
-        
         selectedDialog.selectInitialNode(initialId);
     };
     
@@ -124,9 +93,7 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
         	location.href = '/builder/';
         });
         
-        var allCardSelectContent =  '<li class="mdc-list-item mdc-list-item--selected">';
-		allCardSelectContent +=     '  <span class="mdc-list-item__text">Please Select a Card&#8230;</span>';
-		allCardSelectContent +=     '</li>';
+        var allCardSelectContent =  '';
 
 		var groups = {};
 		var groupNames = [];
@@ -210,32 +177,31 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
 
 						if (expanded) {
 							$(event.currentTarget).find(".destination_disclosure_icon").html("arrow_right");
-						} else {
+
+	                        $('[data-category="' + categoryName + '"]').hide();
+                        } else {
 							$(event.currentTarget).find(".destination_disclosure_icon").html("arrow_drop_down");
 							
-							console.log("CATEGORY: " + categoryName);
-
 	                        $('[data-category="' + categoryName + '"]').show();
 						}
                     } else {
+						$(".all-cards-select-item").hide();
+						$(".destination_disclosure_icon").text("arrow_right");
+
+						window.dialogBuilder.selectCardsDialog.close();
+
 						var nodeId = $(event.currentTarget).attr("data-node-id");
 
-						console.log(nodeId);
-				
-						if (nodeId != undefined && nodeId != null) {
-							var id = event.currentTarget.id;
+						var id = event.currentTarget.id;
 
-							id = id.replace("all_cards_destination_item_", '');
-				
-							window.dialogBuilder.loadNodeById(id);
-						}
+						id = id.replace("all_cards_destination_item_", '');
+					
+						console.log("ID: " + id);
+
+						window.dialogBuilder.loadNodeById(id);
 					}
 				});
 			}
-
-			$(".builder-destination-item").hide();
-
-			window.dialogBuilder.allCardsSelect.selectedIndex = 0;
 		}, 500);
     }
     
@@ -251,14 +217,16 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
 				window.dialogBuilder.loadDialog(dialog, item['id']);
 
 				var node = Node.createCard(item, dialog);
+				
+				window.setTimeout(function() {
+					var current = $("#builder_current_node");
 
-				var current = $("#builder_current_node");
+					var html = node.editHtml();
 
-				var html = node.editHtml();
+					current.html(html);
 
-				current.html(html);
-
-				node.initialize();    
+					node.initialize();    
+				},  100);
 
 				return;             
 			}
@@ -299,18 +267,77 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
 	        }
         }
         
-        window.dialogBuilder.reloadDialog();
+        try {
+	        window.dialogBuilder.reloadDialog();
+	    } catch (err) {
+	    	console.log("Err");
+	    	console.log(err);
+	    }
 
-        window.dialogBuilder.allCardsSelect = mdc.select.MDCSelect.attachTo(document.getElementById('select-all-cards'));
+	    window.dialogBuilder.selectCardsDialog = mdc.dialog.MDCDialog.attachTo(document.getElementById('builder-select-card-dialog'));
+	    
+        $("#action_select_card").off("click");
+
+        $("#action_select_card").click(function(eventObj) {
+            eventObj.preventDefault();
+
+			try {
+            	window.dialogBuilder.selectCardsDialog.open();
+            } catch (err) {
+            
+            }
+        });
 
         window.dialogBuilder.addCardDialog = mdc.dialog.MDCDialog.attachTo(document.getElementById('add-card-dialog'));
         mdc.textField.MDCTextField.attachTo(document.getElementById('add-card-name'));
         
         window.dialogBuilder.newCardSelect = mdc.select.MDCSelect.attachTo(document.getElementById('add-card-type'));
 
-        window.dialogBuilder.editDialogModal = mdc.dialog.MDCDialog.attachTo(document.getElementById('edit-sequence-dialog'));
-        mdc.textField.MDCTextField.attachTo(document.getElementById('edit-sequence-name'));
+        window.dialogBuilder.editDialogModal = mdc.dialog.MDCDialog.attachTo(document.getElementById('builder-dialog-setting-dialog'));
+        window.dialogBuilder.editDialogModalTitle = mdc.textField.MDCTextField.attachTo(document.getElementById('builder-dialog-setting-dialog-name'));
 
         window.dialogBuilder.loadDialog(window.dialogBuilder.dialog, null);
+
+        $("#action_edit_dialog").off("click");
+
+        $("#action_edit_dialog").click(function(eventObj) {
+            eventObj.preventDefault();
+            
+            window.dialogBuilder.editDialogModalTitle.value = $("#dialog-name").text();
+            
+            window.dialogBuilder.editDialogModal.open();
+        });
+
+		var renameListener = {
+			handleEvent: function (event) {
+				if (event.detail.action == "close") {
+					var originalValue = $(".mdc-top-app-bar__title").text();
+					
+					var newValue = window.dialogBuilder.editDialogModalTitle.value;
+					
+					if (newValue != originalValue) {
+						$(".mdc-top-app-bar__title").text(newValue);
+					}
+
+					$("#action_save").show();
+			
+					window.dialogBuilder.editDialogModal.unlisten('MDCDialog:closed', this);
+			   }
+			}
+		};
+		
+		window.dialogBuilder.editDialogModal.listen('MDCDialog:closed', renameListener);
     });
+
+    var viewportHeight = $(window).height();
+    
+    var sourceTop = $("#builder_source_nodes").offset().top;
+
+    var sourceHeight = $("#builder_source_nodes").height();
+
+    var columnHeight = viewportHeight - sourceTop - sourceHeight - 24;
+    
+    $("#builder_source_nodes").height(columnHeight);
+    $("#builder_current_node").height(columnHeight);
+    $("#builder_next_nodes").height(columnHeight);    
 });
