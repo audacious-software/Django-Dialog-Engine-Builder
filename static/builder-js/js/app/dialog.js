@@ -2,7 +2,7 @@ var modules = ["material", 'cards/node', 'jquery'];
 
 if (window.dialogBuilder.cards != undefined) {
     var cards = window.dialogBuilder.cards;
-    
+
     for (var i = 0; i < cards.length; i++) {
         modules.push(cards[i]);
     }
@@ -15,27 +15,27 @@ define(modules, function (mdc, Node) {
             this.name = name;
             this.changeListeners = [];
         }
-        
+
         allActions() {
             var actions = [];
-            
+
             for (var i = 0; i < this.definition.length; i++) {
                 var item = this.definition[i];
-                
+
                 var action = {"id": item["id"]};
-                
+
                 if (item["name"] != undefined) {
                     action["name"] = item["name"];
                 } else {
                     action["name"] = item["id"];
                 }
-                
+
                 actions.push(action);
             }
-            
+
             return actions;
         }
-        
+
         getName() {
             return this.name;
         }
@@ -44,158 +44,154 @@ define(modules, function (mdc, Node) {
             if (typeof nodeId == 'undefined') {
                 throw "Undefined Node Id";
             }
-            
+
             $("#dialog_breadcrumbs").html(this.getName());
-            
+
             if (nodeId == null || nodeId == undefined) {
                 this.loadNode(this.definition[0]);
             } else {
                 var loaded = false;
-                
+
                 for (var i = 0; loaded == false && i < this.definition.length; i++) {
                     var item = this.definition[i];
-                    
-                    if (nodeId == item["id"] || nodeId.endsWith("#" + item["id"])) {
-                        console.log(item);
 
+                    if (nodeId == item["id"] || nodeId.endsWith("#" + item["id"])) {
                         this.loadNode(item);
-                        
+
                         loaded = true;
                     }
                 }
 
                 if (loaded == false) {
-                    console.log(this.definition[0]);
-
                     this.loadNode(this.definition[0]);
                 }
             }
         }
-        
+
         loadNode(definition) {
-        	var me = this;
-        	
-        	if (definition != undefined) {
-				var node = Node.createCard(definition, this);
-			
-				var current = $("#builder_current_node");
-			
-				var html = node.editHtml();
+            var me = this;
 
-				current.html(html);
+            if (definition != undefined) {
+                var node = Node.createCard(definition, this);
 
-				node.initialize();
+                var current = $("#builder_current_node");
 
-				if ($("#dialog_breadcrumbs").children("#breadcrumb-" + node.id).length > 0) {
-					var match = $("#dialog_breadcrumbs").children("#breadcrumb-" + node.id);
-					var last = $("#dialog_breadcrumbs").children().last();
-				
-					while (match.attr("id") != last.attr("id")) {
+                var html = node.editHtml();
 
-						last.remove();
+                current.html(html);
 
-						last = $("#dialog_breadcrumbs").children().last();
-					}
-				} else {
-					var chevron = '<i class="material-icons" style="font-size: 0.75rem;">chevron_right</i>';
-					var breadcrumb = '<a id="breadcrumb-' + node.id + '" href="#">' + node.cardName() + '</a>';
+                node.initialize();
 
-					$("#dialog_breadcrumbs").append(chevron + breadcrumb);
+                if ($("#dialog_breadcrumbs").children("#breadcrumb-" + node.id).length > 0) {
+                    var match = $("#dialog_breadcrumbs").children("#breadcrumb-" + node.id);
+                    var last = $("#dialog_breadcrumbs").children().last();
 
-					$("#breadcrumb-" + node.id).click(function(eventObj) {
-						eventObj.preventDefault();
-				
-						me.loadNode(definition);
-			
-						return false;
-					})
-				}
-			
-				var destinations = $("#builder_next_nodes");
-			
-				var destinationNodes = node.destinationNodes(this);
-			
-				var destinationHtml = '';
+                    while (match.attr("id") != last.attr("id")) {
 
-				for (var i = 0; i < destinationNodes.length; i++) {
-					destinationHtml += destinationNodes[i].viewHtml();
-				}
+                        last.remove();
 
-				destinations.html(destinationHtml);
-			
-				for (var i = 0; i < destinationNodes.length; i++) {
-					const destinationNode = destinationNodes[i];
-				
-					$("#" + destinationNode["cardId"]).css("background-color", "#E0E0E0");
+                        last = $("#dialog_breadcrumbs").children().last();
+                    }
+                } else {
+                    var chevron = '<i class="material-icons" style="font-size: 0.75rem;">chevron_right</i>';
+                    var breadcrumb = '<a id="breadcrumb-' + node.id + '" href="#">' + node.cardName() + '</a>';
 
-					destinationNode.onClick(function() {
-						me.loadNode(destinationNode.definition);    
-					});
-				}
+                    $("#dialog_breadcrumbs").append(chevron + breadcrumb);
 
-				var sources = $("#builder_source_nodes");
-			
-				var sourceNodes = node.sourceNodes(this);
-			
-				var sourceHtml = '';
+                    $("#breadcrumb-" + node.id).click(function(eventObj) {
+                        eventObj.preventDefault();
 
-				for (var i = 0; i < sourceNodes.length; i++) {
-					sourceHtml += sourceNodes[i].viewHtml();
-				}
+                        me.loadNode(definition);
 
-				sources.html(sourceHtml);
+                        return false;
+                    })
+                }
 
-				for (var i = 0; i < sourceNodes.length; i++) {
-					const sourceNode = sourceNodes[i];
+                var destinations = $("#builder_next_nodes");
 
-					$("#" + sourceNode["cardId"]).css("background-color", "#E0E0E0");
-				
-					sourceNode.onClick(function() {
-						me.loadNode(sourceNode.definition);    
-					});
-				}
-        	} else {
+                var destinationNodes = node.destinationNodes(this);
+
+                var destinationHtml = '';
+
+                for (var i = 0; i < destinationNodes.length; i++) {
+                    destinationHtml += destinationNodes[i].viewHtml();
+                }
+
+                destinations.html(destinationHtml);
+
+                for (var i = 0; i < destinationNodes.length; i++) {
+                    const destinationNode = destinationNodes[i];
+
+                    $("#" + destinationNode["cardId"]).css("background-color", "#E0E0E0");
+
+                    destinationNode.onClick(function() {
+                        me.loadNode(destinationNode.definition);
+                    });
+                }
+
+                var sources = $("#builder_source_nodes");
+
+                var sourceNodes = node.sourceNodes(this);
+
+                var sourceHtml = '';
+
+                for (var i = 0; i < sourceNodes.length; i++) {
+                    sourceHtml += sourceNodes[i].viewHtml();
+                }
+
+                sources.html(sourceHtml);
+
+                for (var i = 0; i < sourceNodes.length; i++) {
+                    const sourceNode = sourceNodes[i];
+
+                    $("#" + sourceNode["cardId"]).css("background-color", "#E0E0E0");
+
+                    sourceNode.onClick(function() {
+                        me.loadNode(sourceNode.definition);
+                    });
+                }
+            } else {
                 me.addCard(function(cardId) {
-					for (var j = 0; j < me.definition["items"].length; j++) {
-						var item = me.definition["items"][j];
+                    for (var j = 0; j < me.definition["items"].length; j++) {
+                        var item = me.definition["items"][j];
 
-						if (item["id"] == cardId) {
-							me.loadNode(item);
+                        if (item["id"] == cardId) {
+                            me.loadNode(item);
 
-							return;             
-						}
-					}
+                            return;
+                        }
+                    }
                 });
-        	}
+            }
         }
-        
+
         checkCorrectness() {
             console.log("Checking correctness...");
-            
+
             for (var i = 0; i < this.definition.length; i++) {
                 var item = this.definition[i];
-                
+
                 if (Node.canCreateCard(item, this) == false) {
                     console.log("Cannot create node for item:");
                     console.log(item);
                 }
             }
-            
+
             console.log("Check complete.");
         }
-        
+
         addChangeListener(changeFunction) {
             this.changeListeners.push(changeFunction);
         }
-        
+
         removeChangeListener(changeFunction) {
             var index = this.changeListeners.indexOf(changeFunction);
-            
+
             if (index >= 0) {
                 this.changeListeners.splice(index, 1);
             }
         }
-        
+
         markChanged(changedId) {
             for (var i = 0; i < this.changeListeners.length; i++) {
                 this.changeListeners[i](changedId);
@@ -205,57 +201,61 @@ define(modules, function (mdc, Node) {
         chooseDestinationMenu = function(cardId) {
             var me = this;
             var body = '';
-
-            body += '    <ul class="mdc-list mdc-dialog__content dialog_card_selection_menu" role="menu" aria-hidden="true" aria-orientation="vertical" tabindex="-1">';
-			body += '      <li class="mdc-list-divider" role="separator"></li>';
             
+            body += '    <div>';
+
+            body += '    <ul class="mdc-list mdc-dialog__content dialog_card_selection_menu" role="menu" aria-hidden="true" aria-orientation="vertical" tabindex="-1" style="padding: 0px;">';
+            body += '      <li class="mdc-list-divider" role="separator"></li>';
+
             var groups = {};
             var groupNames = [];
-            
-			for (var i = 0; i < this.definition.length; i++) {
-				var item = this.definition[i];
-				
-				var itemHtml = "";
-				
-				var groupName = item["builder_group"];
-				
-				if (groupName == undefined) {
-					groupName = "(Ungrouped Cards)"
-				}
 
-				itemHtml += '     <li class="mdc-list-item builder-destination-item" role="menuitem" id="' + cardId + '_destination_item_' + item['id'] + '" data-node-id="' + item['id'] + '" data-category="' + groupName + '">';
-				
-				if (item["name"] != undefined) {
-					itemHtml += '       <span class="mdc-list-item__text">' + item["name"] + '</span>';
-				} else {
-					itemHtml += '       <span class="mdc-list-item__text">' + item["id"] + '</span>';
-				}
-				
-				itemHtml += '     </li>';
-				
-				var groupHtmls = groups[groupName];
-				
-				if (groupHtmls == undefined) {
-					groupHtmls = [];
-					
-					groups[groupName] = groupHtmls;
-					
-					groupNames.push(groupName);
-				}
-				
-				groupHtmls.push(itemHtml);
-			}
-			
-			groupNames.sort();
-			
-			for (var i = 0; i < groupNames.length; i++) {
-				var groupName = groupNames[i];
-				
-				var htmls = groups[groupName];
+            for (var i = 0; i < this.definition.length; i++) {
+                var item = this.definition[i];
 
-                body += '      <li class="mdc-list-item prevent-menu-close" role="menuitem" id="' + cardId + '_destination_group_' + i + '" data-category-name="' + groupName + '">';
-                body += '        <span class="mdc-list-item__text"><strong>' + groupName + '</strong></span>';
-                body += '        <span class="mdc-list-item__meta material-icons destination_disclosure_icon">arrow_right</span>';
+                var itemHtml = "";
+
+                var groupName = item["builder_group"];
+
+                if (groupName == undefined) {
+                    groupName = "(Ungrouped Cards)"
+                }
+
+                itemHtml += '     <li class="mdc-list-item mdc-list-item--with-one-line builder-destination-item" role="menuitem" id="' + cardId + '_destination_item_' + item['id'] + '" data-node-id="' + item['id'] + '" data-category="' + groupName + '">';
+                itemHtml += '       <span class="mdc-list-item__ripple"></span>';
+
+                if (item["name"] != undefined) {
+                    itemHtml += '       <span class="mdc-list-item__text mdc-list-item__start">' + item["name"] + '</span>';
+                } else {
+                    itemHtml += '       <span class="mdc-list-item__text mdc-list-item__start">' + item["id"] + '</span>';
+                }
+
+                itemHtml += '     </li>';
+
+                var groupHtmls = groups[groupName];
+
+                if (groupHtmls == undefined) {
+                    groupHtmls = [];
+
+                    groups[groupName] = groupHtmls;
+
+                    groupNames.push(groupName);
+                }
+
+                groupHtmls.push(itemHtml);
+            }
+
+            groupNames.sort();
+
+            for (var i = 0; i < groupNames.length; i++) {
+                var groupName = groupNames[i];
+
+                var htmls = groups[groupName];
+
+                body += '      <li class="mdc-list-item mdc-list-item--with-one-line prevent-menu-close" role="menuitem" id="' + cardId + '_destination_group_' + i + '" data-category-name="' + groupName + '">';
+                body += '        <span class="mdc-list-item__ripple"></span>';
+                body += '        <span class="mdc-list-item__text mdc-list-item__start"><strong>' + groupName + '</strong></span>';
+                body += '        <span class="mdc-layout-grid--align-right material-icons destination_disclosure_icon mdc-list-item__end">arrow_right</span>';
                 body += '      </li>';
 
                 for (var j = 0; j < htmls.length; j++) {
@@ -263,183 +263,176 @@ define(modules, function (mdc, Node) {
                 }
 
                 body += '      <li class="mdc-list-divider" role="separator"></li>';
-			}
+            }
 
-            body += '      <li class="mdc-list-item" role="menuitem" id="' + cardId + '_destination_item_add_card">';
-            body += '        <span class="mdc-list-item__text">Add&#8230;</span>';
-            body += '        <span class="mdc-list-item__meta material-icons">add</span>';
+            body += '      <li class="mdc-list-item mdc-list-item--with-one-line" role="menuitem" id="' + cardId + '_destination_item_add_card">';
+            body += '        <span class="mdc-list-item__ripple"></span>';
+            body += '        <span class="mdc-list-item__text mdc-list-item__start">Add&#8230;</span>';
+            body += '        <span class="mdc-layout-grid--align-right mdc-list-item__end material-icons">add</span>';
             body += '      </li>';
 
             body += '    </ul>';
-            
+
+            body += '    </div>';
+
             return body;
         }
 
         initializeDestinationMenu(cardId, onSelect) {
             var me = this;
 
-			window.setTimeout(function() {
-				$(".dialog_card_selection_menu .mdc-list-item").off("click");
+            window.setTimeout(function() {
+                $(".dialog_card_selection_menu .mdc-list-item").off("click");
 
-				const options = document.querySelectorAll('.dialog_card_selection_menu .mdc-list-item');
+                const options = document.querySelectorAll('.dialog_card_selection_menu .mdc-list-item');
 
-				for (let option of options) {
-					option.addEventListener('click', (event) => {
-						let prevent = event.currentTarget.classList.contains('prevent-menu-close');
+                for (let option of options) {
+                    option.addEventListener('click', (event) => {
+                        let prevent = event.currentTarget.classList.contains('prevent-menu-close');
 
-						if (prevent) {
-							event.stopPropagation();
+                        if (prevent) {
+                            event.stopPropagation();
 
-							var categoryName = $(event.currentTarget).attr("data-category-name");
+                            var categoryName = $(event.currentTarget).attr("data-category-name");
 
-							var icon = $(event.currentTarget).find(".destination_disclosure_icon").html();
-					
-							var expanded = (icon == 'arrow_drop_down');
-						
-							$(".dialog_card_selection_menu .builder-destination-item").hide();
+                            var icon = $(event.currentTarget).find(".destination_disclosure_icon").html();
 
-							$(".dialog_card_selection_menu .destination_disclosure_icon").html("arrow_right");
+                            var expanded = (icon == 'arrow_drop_down');
 
-							if (expanded == false) {
-								$(event.currentTarget).find(".destination_disclosure_icon").html("arrow_drop_down");
+                            $(".dialog_card_selection_menu .builder-destination-item").hide();
 
-								$('.dialog_card_selection_menu [data-category="' + categoryName + '"]').show();
-							}
-						} else {
-							var nodeId = $(event.currentTarget).attr("data-node-id");
-					
-							var id = event.currentTarget.id;
+                            $(".dialog_card_selection_menu .destination_disclosure_icon").html("arrow_right");
 
-							id = id.replace(cardId + '_destination_item_', '')
-											
-							if (id == "add_card") {
-								me.addCard(onSelect);
-							} else {
-								onSelect(nodeId);
-							}
-						}
-					});
-				}
+                            if (expanded == false) {
+                                $(event.currentTarget).find(".destination_disclosure_icon").html("arrow_drop_down");
 
-				$(".builder-destination-item").hide();
-			}, 500);
+                                $('.dialog_card_selection_menu [data-category="' + categoryName + '"]').show();
+                            }
+                        } else {
+                            var nodeId = $(event.currentTarget).attr("data-node-id");
+
+                            var id = event.currentTarget.id;
+
+                            id = id.replace(cardId + '_destination_item_', '')
+
+                            if (id == "add_card") {
+                                me.addCard(onSelect);
+                            } else {
+                                onSelect(nodeId);
+                            }
+                        }
+                    });
+                }
+
+                $(".builder-destination-item").hide();
+            }, 500);
         }
 
         addCard(callback) {
             $("#add-card-name-value").val("");
 
-			window.dialogBuilder.newCardSelect.value = '';
-            
+            $("input[name=add_card_radio]").prop('checked', false);
+
             var me = this;
-            
+
             var listener = {
                 handleEvent: function (event) {
                     if (event.detail.action == "add_card") {
                         var cardName = $("#add-card-name-value").val();
-                        
-                        var cardType = window.dialogBuilder.newCardSelect.value;
+
+                        var cardType = $('input[name=add_card_radio]:checked').val()
 
                         var cardClass = window.dialogBuilder.cardMapping[cardType];
-                    
+
                         var cardDef = cardClass.createCard(cardName);
-                        
+
                         if (me.definition.includes(cardDef) == false) {
                             me.definition.push(cardDef);
-                        }   
+                        }
 
                         callback(cardDef["id"]);
-                    
+
                         window.dialogBuilder.addCardDialog.unlisten('MDCDialog:closed', this);
                    }
                 }
             };
-            
+
             window.dialogBuilder.addCardDialog.listen('MDCDialog:closed', listener);
 
             window.dialogBuilder.addCardDialog.open();
         }
-        
+
         deleteCard(cardId) {
-        	if (confirm("Are you sure you want to delete this card?")) {
-				var indices = [];
-			
-				for (var i = 0; i < this.definition.length; i++) {
-					var item = this.definition[i];
-					
-					console.log("TEST " + cardId + " =? " + item["id"]);
-				
-					if (cardId == item['id']) {
-						indices.push(i);
-					}
-				}
-				
-				console.log('TO DELETE:')
-				console.log(indices)
-			
-				indices.sort();
-				indices.reverse();
-			
-				for (var i = 0; i < indices.length; i++) {
-					var index = indices[i];
-					
-					console.log("removing " + index);
-				
-					this.definition.splice(index, 1);
-				}
+            if (confirm("Are you sure you want to delete this card?")) {
+                var indices = [];
 
-				console.log('DEF:')
-				console.log(this.definition)
-			
-				this.loadNode(this.definition[0]);
+                for (var i = 0; i < this.definition.length; i++) {
+                    var item = this.definition[i];
 
-				window.dialogBuilder.reloadDialog();
-			}
+                    if (cardId == item['id']) {
+                        indices.push(i);
+                    }
+                }
+
+                indices.sort();
+                indices.reverse();
+
+                for (var i = 0; i < indices.length; i++) {
+                    var index = indices[i];
+
+                    this.definition.splice(index, 1);
+                }
+
+                this.loadNode(this.definition[0]);
+
+                window.dialogBuilder.reloadDialog();
+            }
         }
-        
+
         resolveNode(nodeId) {
             if (nodeId == null) {
                 return null;
             }
-            
-			for (var i = 0; i < this.definition.length; i++) {
-				var item = this.definition[i];
-			
-				if (nodeId == item["id"]) {
-					return Node.createCard(item, this);
-				}
-			}
-            
+
+            for (var i = 0; i < this.definition.length; i++) {
+                var item = this.definition[i];
+
+                if (nodeId == item["id"]) {
+                    return Node.createCard(item, this);
+                }
+            }
+
             return null;
         }
 
         loadDialog(definition) {
             var dialog = new Dialog(definition);
-        
+
             dialog.checkCorrectness();
-        
+
             return dialog;
         }
-        
-        updateReferences(oldId, newId) {
-			for (var i = 0; i < this.definition.length; i++) {
-				var item = this.definition[i];
 
-				var node = Node.createCard(item, this);
-				
-				node.updateReferences(oldId, newId);
-			}
+        updateReferences(oldId, newId) {
+            for (var i = 0; i < this.definition.length; i++) {
+                var item = this.definition[i];
+
+                var node = Node.createCard(item, this);
+
+                node.updateReferences(oldId, newId);
+            }
         }
     }
 
     var dialog = {}
-    
+
     dialog.loadDialog = function(definition) {
         var dialog = new Dialog(definition);
-        
+
         dialog.checkCorrectness();
-        
+
         return dialog;
     }
-    
+
     return dialog;
 });

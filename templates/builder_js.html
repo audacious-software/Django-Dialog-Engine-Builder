@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
         <meta name="theme-color" content="#000000">
 
-        <link rel="stylesheet" href="{% static 'builder-js/vendor/material-components-web.min.css' %}" />
+        <link rel="stylesheet" href="{% static 'builder-js/vendor/material-components-web-11.0.0.css' %}" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
         <title>Dialog Builder</title>
@@ -48,6 +48,7 @@
                 <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
                     <a href="javascript:window.history.back();" class="demo-menu material-icons mdc-top-app-bar__navigation-icon">arrow_back</a>
                     <span id="dialog-name" class="mdc-top-app-bar__title">{{ dialog.name }}</span>
+                    <span id="dialog-identifier" style="display: none;">{{ dialog.identifier }}</span>
                 </section>
                 <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end" role="toolbar">
                     <a href="#" class="material-icons mdc-top-app-bar__action-item" aria-label="Select Card" id="action_select_card">collections</a>
@@ -104,24 +105,9 @@
                                 <div class="mdc-notched-outline__trailing"></div>
                             </div>
                         </div>
-                        <div class="mdc-select mdc-select--outlined" id="add-card-type" style="width: 100%; margin-top: 16px;">
-                            <div class="mdc-select__anchor" style="width: 100%;">
-                                <i class="mdc-select__dropdown-icon"></i>
-                                <div id="demo-selected-text" class="mdc-select__selected-text" aria-labelledby="outlined-select-label"></div>
-                                    <div class="mdc-notched-outline">
-                                        <div class="mdc-notched-outline__leading"></div>
-                                        <div class="mdc-notched-outline__notch">
-                                        <label id="outlined-select-label" class="mdc-floating-label">Action</label>
-                                    </div>
-                                <div class="mdc-notched-outline__trailing"></div>
-                                </div>
-                            </div>
-                            <div class="mdc-select__menu mdc-menu mdc-menu-surface demo-width-class">
-                                <ul class="mdc-list" id="add-card-select-widget">
-                                    <li class="mdc-list-item mdc-list-item--selected" data-value="" aria-selected="true"></li>
-                                </ul>
-                            </div>
-                        </div>
+						<div class="mdc-layout-grid" style="padding-left: 0; padding-right: 0; padding-bottom: 0;">
+							<div class="mdc-layout-grid__inner" id="add_card_radio_options"></div>
+						</div>                        
                     </div>
                     <footer class="mdc-dialog__actions">
                         <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="cancel">
@@ -235,6 +221,16 @@
                                         <div class="mdc-notched-outline__trailing"></div>
                                     </div>
                                 </div>
+                                <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-text-field mdc-text-field--outlined" id="builder-dialog-setting-dialog-identifier">
+                                    <input type="text" id="tf-outlined" class="mdc-text-field__input">
+                                    <div class="mdc-notched-outline">
+                                        <div class="mdc-notched-outline__leading"></div>
+                                        <div class="mdc-notched-outline__notch">
+                                            <label for="tf-outlined" class="mdc-floating-label">Identifier</label>
+                                        </div>
+                                        <div class="mdc-notched-outline__trailing"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -270,6 +266,7 @@
             update: function(name, definition, success, failure) {
                 var payload = {
                     'name': $(".mdc-top-app-bar__title").text(),
+                    'identifier': $("#dialog-identifier").text(),
                     'definition': JSON.stringify(definition, 2)
                 };
                 

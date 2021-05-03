@@ -39,6 +39,9 @@ def builder_dialog(request, dialog): # pylint: disable=unused-argument
         if 'name' in request.POST:
             context['dialog'].name = request.POST['name']
 
+        if 'identifier' in request.POST:
+            context['dialog'].identifier = request.POST['identifier']
+
         context['dialog'].save()
 
         return HttpResponse(json.dumps({'success': True}, indent=2), content_type='application/json', status=200)
