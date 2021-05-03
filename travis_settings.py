@@ -26,7 +26,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.gis',
     'django_dialog_engine'
 )
 
@@ -63,7 +62,7 @@ WSGI_APPLICATION = 'pdk.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE':   'django.contrib.gis.db.backends.postgis',
+        'ENGINE':   'django.db.backends.postgresql_psycopg2',
         'NAME':     'travisci',
         'USER':     'postgres',
         'PASSWORD': '',
@@ -73,8 +72,7 @@ DATABASES = {
 }
 
 if 'test' in sys.argv or 'test_coverage' in sys.argv: #Covers regular testing and django-coverage
-    DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.spatialite'
-#     SPATIALITE_LIBRARY_PATH = 'mod_spatialite'
+    SPATIALITE_LIBRARY_PATH = 'mod_spatialite'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
