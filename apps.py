@@ -4,5 +4,6 @@ from __future__ import unicode_literals
 from django.apps import AppConfig
 
 
-class BuilderConfig(AppConfig):
-    name = 'builder'
+class DjangoDialogEngineBuilderConfig(AppConfig):
+    name = 'django_dialog_engine_builder'
+    verbose_name = 'Dialog Engine: Builder'
