@@ -6,8 +6,9 @@ from builtins import str # pylint: disable=redefined-builtin
 import json
 import os
 
+from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
-from django.http import HttpResponse, Http404, FileResponse
+from django.http import HttpResponse, FileResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
@@ -57,18 +58,14 @@ def builder_dialog_definition_json(request, dialog): # pylint: disable=unused-ar
 def builder_interaction_card(request, card): # pylint: disable=unused-argument
     card = get_object_or_404(InteractionCard, identifier=card)
 
-    if card.client_implementation is not None:
-        content_type = 'application/octet-stream'
+    content_type = 'application/javascript'
 
-        if card.client_implementation.path.endswith('.js'):
-            content_type = 'application/javascript'
+    implementation_path = os.path.join(settings.STATIC_ROOT, 'builder-js/js/cards/' + card.identifier + '.js')
 
-        response = FileResponse(open(card.client_implementation.path, 'rb'), content_type=content_type)
-        response['Content-Length'] = os.path.getsize(card.client_implementation.path)
+    response = FileResponse(open(implementation_path, 'rb'), content_type=content_type)
+    response['Content-Length'] = os.path.getsize(implementation_path)
 
-        return response
-
-    raise Http404('Card implementation not found. Verify that a client implementation file is attached to the card definition.')
+    return response
 
 @staff_member_required
 def builder_add_dialog(request): # pylint: disable=unused-argument
