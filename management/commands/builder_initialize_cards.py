@@ -20,6 +20,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         for card in CARDS:
             if InteractionCard.objects.filter(identifier=card[1]).count() == 0:
-                InteractionCard.objects.create(name=card[0], identifier=[0], enabled=True)
+                InteractionCard.objects.create(name=card[0], identifier=card[1], enabled=True)
 
                 print('Added ' + card[0] + '...')
