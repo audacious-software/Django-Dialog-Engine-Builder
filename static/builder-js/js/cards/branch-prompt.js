@@ -40,20 +40,33 @@ define(modules, function (mdc, Node) {
             body += '<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12" style="padding-top: 8px;">';
             body += '  <div class="mdc-typography--subtitle2">Timeout Parameters</div>';
             body += '</div>';
-            body += '<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-7">';
-            body += '  <div class="mdc-text-field mdc-text-field--outlined" id="' + this.cardId + '_timeout_count"  style="width: 100%">';
-            body += '    <input type="text" class="mdc-text-field__input" id="' + this.cardId + '_timeout_count_value">';
+            body += '<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4">';
+            body += '  <div class="mdc-text-field mdc-text-field--outlined" id="' + this.cardId + '_timeout_seconds"  style="width: 100%">';
+            body += '    <input type="number" min="0" step="1" class="mdc-text-field__input" id="' + this.cardId + '_timeout_seconds_value">';
             body += '    <div class="mdc-notched-outline">';
             body += '      <div class="mdc-notched-outline__leading"></div>';
             body += '      <div class="mdc-notched-outline__notch">';
-            body += '        <label for="' + this.cardId + '_timeout_count_value" class="mdc-floating-label">Seconds</label>';
+            body += '        <label for="' + this.cardId + '_timeout_seconds_value" class="mdc-floating-label">Seconds</label>';
+            body += '      </div>';
+            body += '      <div class="mdc-notched-outline__trailing"></div>';
+            body += '    </div>';
+            body += '  </div>';
+            body += '</div>';
+            body += '<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4">';
+            body += '  <div class="mdc-text-field mdc-text-field--outlined" id="' + this.cardId + '_timeout_times"  style="width: 100%">';
+            body += '    <input type="number" step="1" class="mdc-text-field__input" id="' + this.cardId + '_timeout_times_value">';
+            body += '    <div class="mdc-notched-outline">';
+            body += '      <div class="mdc-notched-outline__leading"></div>';
+            body += '      <div class="mdc-notched-outline__notch">';
+            body += '        <label for="' + this.cardId + '_timeout_times_value" class="mdc-floating-label">Times</label>';
             body += '      </div>';
             body += '      <div class="mdc-notched-outline__trailing"></div>';
             body += '    </div>';
             body += '  </div>';
             body += '</div>';
 
-            body += '<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-5" style="text-align: right;">';
+
+            body += '<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4" style="text-align: right;">';
 
 			body += '  <button class="mdc-icon-button" id="' + this.cardId + '_timeout_edit">';
 			body += '    <i class="material-icons mdc-icon-button__icon" aria-hidden="true">create</i>';
@@ -440,20 +453,38 @@ define(modules, function (mdc, Node) {
 				}
             });
             
-            const timeoutCountField = mdc.textField.MDCTextField.attachTo(document.getElementById(this.cardId + '_timeout_count'));
+            const timeoutSecondsField = mdc.textField.MDCTextField.attachTo(document.getElementById(this.cardId + '_timeout_seconds'));
 
             if (this.definition["timeout"] != undefined) {
-	            timeoutCountField.value = this.definition["timeout"];
+	            timeoutSecondsField.value = this.definition["timeout"];
             }
             
-			$('#' + this.cardId + '_timeout_count_value').change(function(eventObj) {
-				var value = $('#' + me.cardId + '_timeout_count_value').val();
+			$('#' + this.cardId + '_timeout_seconds_value').change(function(eventObj) {
+				var value = $('#' + me.cardId + '_timeout_seconds_value').val();
 				
 				if (value == "") {
 					delete me.definition["timeout"];
 					delete me.definition["timeout_node_id"];
 				} else {
 					me.definition["timeout"] = parseInt(value);
+				}
+
+                me.dialog.markChanged(me.id);
+			});
+
+            const timeoutCountField = mdc.textField.MDCTextField.attachTo(document.getElementById(this.cardId + '_timeout_times'));
+
+            if (this.definition["timeout_iterations"] != undefined) {
+	            timeoutCountField.value = this.definition["timeout_iterations"];
+            }
+            
+			$('#' + this.cardId + '_timeout_times_value').change(function(eventObj) {
+				var value = $('#' + me.cardId + '_timeout_times_value').val();
+				
+				if (value == "") {
+					delete me.definition["timeout_iterations"];
+				} else {
+					me.definition["timeout_iterations"] = parseInt(value);
 				}
 
                 me.dialog.markChanged(me.id);
@@ -500,6 +531,22 @@ define(modules, function (mdc, Node) {
             var nodes = super.destinationNodes(dialog);
             
             var includedIds = [];
+
+            if (this.definition['timeout'] != undefined) {
+                if (this.definition['timeout_node_id'] != undefined) {
+					if (includedIds.indexOf(this.definition['timeout_node_id']) == -1) {
+						for (var i = 0; i < dialog.definition.length; i++) {
+							var item = dialog.definition[i];
+				
+							if (item['id'] == this.definition['timeout_node_id']) {
+								nodes.push(Node.createCard(item, dialog));
+							}
+						}
+						
+						includedIds.push(this.definition['timeout_node_id']);
+					}
+                }
+            }
             
             for (var j = 0; j < this.definition["actions"].length; j++) {
 				var id = this.definition["actions"][j]["action"];
@@ -517,22 +564,6 @@ define(modules, function (mdc, Node) {
 				}
 			}
 
-            if (this.definition['timeout'] != undefined) {
-                if (this.definition['timeout_node_id'] != undefined) {
-					if (includedIds.indexOf(this.definition['timeout_node_id']) == -1) {
-						for (var i = 0; i < dialog.definition.length; i++) {
-							var item = dialog.definition[i];
-				
-							if (item['id'] == this.definition['timeout_node_id']) {
-								nodes.push(Node.createCard(item, dialog));
-							}
-						}
-						
-						includedIds.push(this.definition['timeout_node_id']);
-					}
-                }
-            }
-
             id = this.definition['no_match'];
 		
 			if (includedIds.indexOf(id) == -1) {
@@ -549,9 +580,11 @@ define(modules, function (mdc, Node) {
         }
 
         updateReferences(oldId, newId) {
-            if (this.definition['next_id'] == oldId) {
-                this.definition['next_id'] = newId;
-            }
+        	$.each(this['actions'], function(index, value) {
+        		if (value['action'] == oldId) {
+        			value['action'] = newId;
+        		}
+        	});
         }
 
         cardType() {

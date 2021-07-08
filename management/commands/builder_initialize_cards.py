@@ -12,6 +12,8 @@ CARDS = (
     ('End Dialog', 'end',),
     ('Branching Prompt', 'branch-prompt',),
     ('Send Message', 'echo',),
+    ('Loop', 'loop',),
+    ('Random Branch', 'random-branch',),
 )
 
 class Command(BaseCommand):

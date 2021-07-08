@@ -221,7 +221,7 @@ define(modules, function (mdc, Node) {
                     groupName = "(Ungrouped Cards)"
                 }
 
-                itemHtml += '     <li class="mdc-list-item mdc-list-item--with-one-line builder-destination-item" role="menuitem" id="' + cardId + '_destination_item_' + item['id'] + '" data-node-id="' + item['id'] + '" data-category="' + groupName + '">';
+                itemHtml += '     <li class="mdc-list-item mdc-list-item--with-one-line builder-destination-item" role="menuitem" data-sort-name="' + item["name"] + '" id="' + cardId + '_destination_item_' + item['id'] + '" data-node-id="' + item['id'] + '" data-category="' + groupName + '">';
                 itemHtml += '       <span class="mdc-list-item__ripple"></span>';
 
                 if (item["name"] != undefined) {
@@ -250,13 +250,15 @@ define(modules, function (mdc, Node) {
             for (var i = 0; i < groupNames.length; i++) {
                 var groupName = groupNames[i];
 
-                var htmls = groups[groupName];
-
                 body += '      <li class="mdc-list-item mdc-list-item--with-one-line prevent-menu-close" role="menuitem" id="' + cardId + '_destination_group_' + i + '" data-category-name="' + groupName + '">';
                 body += '        <span class="mdc-list-item__ripple"></span>';
                 body += '        <span class="mdc-list-item__text mdc-list-item__start"><strong>' + groupName + '</strong></span>';
                 body += '        <span class="mdc-layout-grid--align-right material-icons destination_disclosure_icon mdc-list-item__end">arrow_right</span>';
                 body += '      </li>';
+
+                var htmls = groups[groupName];
+                
+                htmls.sort();
 
                 for (var j = 0; j < htmls.length; j++) {
                     body += htmls[j];

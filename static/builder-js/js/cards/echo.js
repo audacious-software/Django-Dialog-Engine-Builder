@@ -159,7 +159,7 @@ define(modules, function (mdc, Node) {
 				"message": "(Message goes here...)", 
 				"type": "echo", 
 				"id": Node.uuidv4(),
-				"next": null
+				"next_id": null
 			}; 
 			
 			return card;
