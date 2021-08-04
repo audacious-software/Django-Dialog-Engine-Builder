@@ -329,7 +329,7 @@ define(modules, function (mdc, Node) {
                 $(".builder-destination-item").hide();
             }, 500);
         }
-
+        
         addCard(callback) {
             $("#add-card-name-value").val("");
 

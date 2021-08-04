@@ -35,8 +35,6 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
         }
     });
 
-    // const drawer = mdc.drawer.MDCDrawer.attachTo(document.querySelector('.mdc-drawer'));
-
     const topAppBar = mdc.topAppBar.MDCTopAppBar.attachTo(document.getElementById('app-bar'));
 
     var selectedDialog = null;
@@ -260,7 +258,7 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
                 name = key;
             }
 
-            if (key != 'begin' && key != 'end') {
+            if (key != 'begin' && key != 'end' && key != 'interrupt') {
                 var radio = '';
 
                 radio += '<div class="mdc-form-field mdc-layout-grid__cell--span-6">';
@@ -343,6 +341,39 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
         };
 
         window.dialogBuilder.editDialogModal.listen('MDCDialog:closed', renameListener);
+        
+        window.dialogBuilder.addInterruptDialog = mdc.dialog.MDCDialog.attachTo(document.getElementById('add-interrupt-dialog'));
+        const interruptName = mdc.textField.MDCTextField.attachTo(document.getElementById('add-interrupt-name'));
+
+        $("#action_add_interrupt").click(function(eventObj) {
+            eventObj.preventDefault();
+
+            window.dialogBuilder.addInterruptDialog.open();
+        });
+
+        var addInterruptListener = {
+            handleEvent: function (event) {
+                if (event.detail.action == "add_interrupt") {
+					var cardClass = window.dialogBuilder.cardMapping['interrupt'];
+
+					var cardDef = cardClass.createCard(interruptName.value);
+					
+					console.log("DIALOG");
+					console.log(window.dialogBuilder.dialog);
+
+					if (window.dialogBuilder.dialog.includes(cardDef) == false) {
+						window.dialogBuilder.dialog.push(cardDef);
+					}
+
+                    window.dialogBuilder.addInterruptDialog.unlisten('MDCDialog:closed', this);
+                    
+                    window.dialogBuilder.loadNodeById(cardDef['id']);
+               }
+            }
+        };
+
+        window.dialogBuilder.addInterruptDialog.listen('MDCDialog:closed', addInterruptListener);
+
     });
 
     var viewportHeight = $(window).height();
