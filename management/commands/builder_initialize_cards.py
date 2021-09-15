@@ -14,6 +14,7 @@ CARDS = (
     ('Send Message', 'echo',),
     ('Loop', 'loop',),
     ('Random Branch', 'random-branch',),
+    ('Raise Alert', 'alert',),
 )
 
 class Command(BaseCommand):
