@@ -12,6 +12,7 @@ CARDS = (
     ('End Dialog', 'end',),
     ('Branching Prompt', 'branch-prompt',),
     ('Send Message', 'echo',),
+    ('Raise Alert', 'alert',),
 )
 
 class Command(BaseCommand):
