@@ -1,0 +1,86 @@
+{% load static %}
+{% load django_dialog_engine_builder %}
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+        <meta name="theme-color" content="#000000">
+
+        <link rel="stylesheet" href="{% static 'builder-js/vendor/material-components-web-11.0.0.css' %}" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+        <title>Dialog Builder</title>
+        <style>
+            body {
+                display: flex;
+                height: 100vh;
+                margin: 0px;
+            }
+
+            .main-content {
+                margin-top: 64px;
+                width: 100%;
+            }
+
+            .app-bar {
+                position: absolute;
+                z-index: 10;
+            }
+
+            .mdc-top-app-bar {
+                z-index: 7;
+            }
+            
+            a {
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body class="mdc-typography">
+        <header class="mdc-top-app-bar app-bar mdc-top-app-bar--fixed" id="app-bar">
+            <div class="mdc-top-app-bar__row">
+                <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+                    <a href="javascript:window.history.back();" class="demo-menu material-icons mdc-top-app-bar__navigation-icon">arrow_back</a>
+                    <span id="dialog-name" class="mdc-top-app-bar__title">{{ dialog.name }}</span>
+                    <span id="dialog-identifier" style="display: none;">{{ dialog.identifier }}</span>
+                </section>
+                <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end" role="toolbar">
+<!--                    <a href="#" class="material-icons mdc-top-app-bar__action-item" aria-label="Select Card" id="action_select_card" style="margin-left: 11px;">collections</a>
+                    <a href="#" class="material-icons mdc-top-app-bar__action-item" aria-label="Add Interrupt" id="action_add_interrupt" style="margin-left: 11px;">announcement</a>
+                    <a href="#" class="material-icons mdc-top-app-bar__action-item" aria-label="Edit Sequence" id="action_edit_dialog" style="margin-left: 11px;">edit</a>
+                    <a href="#" class="material-icons mdc-top-app-bar__action-item" aria-label="Save" id="action_save" style="margin-left: 11px;">save</a>
+-->
+                </section>
+            </div>
+        </header>
+
+		<main class="main-content" id="main-content">
+			<div class="mdc-layout-grid">
+				<div class="mdc-layout-grid__inner">
+					<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12" id="cytoscape_canvas" style="height: 800px;">
+					</div>
+				</div>
+				<div class="mdc-layout-grid__inner">
+					<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
+						<span class="mdc-typography--caption">
+							<pre>{{ dialog|cytoscape_json }}</pre>
+						</span>
+					</div>
+				</div>
+			</div>
+		</main>
+
+        {% csrf_token %}
+    </body>
+    
+    <script>
+        window.visualizationOptions = {
+            name: "{{ dialog.name }}",
+            source: {{ dialog|cytoscape_json|safe }},
+            container: "#cytoscape_canvas"
+        };
+    </script>
+
+    <script data-main="{% static 'builder-js/js/app/view.js' %}" src="{% static 'builder-js/vendor/require.js' %}"></script>
+</html>

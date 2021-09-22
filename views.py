@@ -102,3 +102,11 @@ def builder_add_dialog(request): # pylint: disable=unused-argument
     dialog.save()
 
     return redirect('builder_dialog', dialog.pk)
+
+@staff_member_required
+def builder_dialog_html_view(request, dialog): # pylint: disable=unused-argument
+    context = {
+        'dialog': DialogScript.objects.filter(pk=str(dialog)).first()
+    }
+
+    return render(request, 'builder_view.html', context=context)
