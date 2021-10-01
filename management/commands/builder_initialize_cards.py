@@ -15,6 +15,7 @@ CARDS = (
     ('Loop', 'loop',),
     ('Random Branch', 'random-branch',),
     ('Raise Alert', 'alert',),
+    ('Pause', 'pause',),
 )
 
 class Command(BaseCommand):
