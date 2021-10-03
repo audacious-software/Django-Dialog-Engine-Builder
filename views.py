@@ -62,7 +62,7 @@ def builder_interaction_card(request, card): # pylint: disable=unused-argument
 
     implementation_path = os.path.join(settings.STATIC_ROOT, 'builder-js/js/cards/' + card.identifier + '.js')
 
-    response = FileResponse(open(implementation_path, 'rb'), content_type=content_type)
+    response = FileResponse(open(implementation_path, 'rb'), content_type=content_type) # pylint: disable=consider-using-with
     response['Content-Length'] = os.path.getsize(implementation_path)
 
     return response
