@@ -3,6 +3,9 @@
 
 from __future__ import print_function
 
+import importlib
+
+from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from ...models import InteractionCard
@@ -27,3 +30,17 @@ class Command(BaseCommand):
                 InteractionCard.objects.create(name=card[0], identifier=card[1], enabled=True)
 
                 print('Added ' + card[0] + '...')
+
+    for app in settings.INSTALLED_APPS:
+        try:
+            dialog_module = importlib.import_module('.dialog_api', package=app)
+
+            cards = dialog_module.dialog_builder_cards()
+
+            for card in cards:
+                if InteractionCard.objects.filter(identifier=card[1]).count() == 0:
+                    InteractionCard.objects.create(name=card[0], identifier=card[1], enabled=True)
+        except ImportError:
+            pass
+        except AttributeError:
+            pass
