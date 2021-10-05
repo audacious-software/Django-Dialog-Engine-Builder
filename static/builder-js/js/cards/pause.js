@@ -12,7 +12,7 @@ define(modules, function (mdc, Node) {
             var body = '';
 
             body += '<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12" style="padding-top: 8px;">';
-            body += '  <div class="mdc-typography--subtitle2">Dursation</div>';
+            body += '  <div class="mdc-typography--subtitle2">Duration</div>';
             body += '</div>';
             body += '<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-7">';
             body += '  <div class="mdc-text-field mdc-text-field--outlined" id="' + this.cardId + '_duration"  style="width: 100%">';
