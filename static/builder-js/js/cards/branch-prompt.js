@@ -295,9 +295,9 @@ define(modules, function (mdc, Node) {
                 if (pattern.value == "") {
                     action["pattern"] = "";
                 } else if (operation == "begins_with") {
-                    action["pattern"] = "^" + pattern;
+                    action["pattern"] = "^" + pattern + ".*";
                 } else if (operation == "ends_with") {
-                    action["pattern"] = pattern + "$";
+                    action["pattern"] = ".*" + pattern + "$";
                 } else if (operation == "equals") {
                     action["pattern"] = "^" + pattern + "$";
                 } else if (operation == "not_contains") {
@@ -328,12 +328,12 @@ define(modules, function (mdc, Node) {
             	} else if (pattern.startsWith("^") && pattern.endsWith("$")) {
             		operationField.value = "equals";
             		patternField.value = pattern.replace("^", "").replace("$", "");
-            	} else if (pattern.startsWith("^")) {
+            	} else if (pattern.startsWith("^") && pattern.endsWith(".*")) {
             		operationField.value = "begins_with";
-            		patternField.value = pattern.replace("^", "");
-            	} else if (pattern.endsWith("$")) {
+            		patternField.value = pattern.replace("^", "").replace(".*", "");
+            	} else if (pattern.startsWith(".*") && pattern.endsWith("$")) {
             		operationField.value = "ends_with";
-            		patternField.value = pattern.replace("$", "");
+            		patternField.value = pattern.replace("$", "").replace(".*", "");
             	} else {
             		operationField.value = "contains";
             		patternField.value = pattern;
