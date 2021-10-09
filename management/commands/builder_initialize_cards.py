@@ -19,6 +19,7 @@ CARDS = (
     ('Random Branch', 'random-branch',),
     ('Raise Alert', 'alert',),
     ('Pause', 'pause',),
+    ('External Choice', 'external-choice',),
 )
 
 class Command(BaseCommand):
