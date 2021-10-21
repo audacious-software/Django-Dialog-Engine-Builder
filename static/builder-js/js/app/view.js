@@ -31,12 +31,15 @@ requirejs.config({
         cytoscape: "/static/builder-js/vendor/cytoscape-3.19.1.min",
         "cytoscape-klay": "/static/builder-js/vendor/cytoscape-klay",
         "cytoscape-dagre": "/static/builder-js/vendor/cytoscape-dagre",
+        "cytoscape-cose-bilkent": "/static/builder-js/vendor/cytoscape-cose-bilkent",
+        "cose-base": "/static/builder-js/vendor/cose-base",
+        "layout-base": "/static/builder-js/vendor/layout-base",
         klayjs: '/static/builder-js/vendor/klay',
         dagre: '/static/builder-js/vendor/dagre.min'
     }
 });
 
-requirejs(["material", "cookie", "jquery", "cytoscape", "cytoscape-dagre"], function(mdc, Cookies, Node, cytoscape, cytoscape_dagre) {
+requirejs(["material", "cookie", "jquery", "cytoscape", "cytoscape-dagre", "cytoscape-cose-bilkent", "cose-base", "layout-base"], function(mdc, Cookies, Node, cytoscape, cytoscape_dagre, cytoscape_cose_bilkent) {
     var csrftoken = $("[name=csrfmiddlewaretoken]").val();
 
     function csrfSafeMethod(method) {
@@ -55,10 +58,14 @@ requirejs(["material", "cookie", "jquery", "cytoscape", "cytoscape-dagre"], func
     const topAppBar = mdc.topAppBar.MDCTopAppBar.attachTo(document.getElementById('app-bar'));
 
     var selectedDialog = null;
+    
+    $("#cytoscape_canvas").height($(window).height() - 64);
 
     topAppBar.setScrollTarget(document.getElementById('main-content'));
     
     cytoscape_dagre(cytoscape); // register extension
+    
+    // cytoscape_cose_bilkent(cytoscape);
     
     var cy = cytoscape({
     	'container': $(window.visualizationOptions.container),
@@ -66,10 +73,21 @@ requirejs(["material", "cookie", "jquery", "cytoscape", "cytoscape-dagre"], func
  	 	// 'zoomingEnabled': false,
     	'layout': {
 			name: 'dagre'
-		}, 'style': [{
+		}, 
+//		ready: function(){
+//			this.nodes().forEach(function(node){
+//				let width = [30, 70, 110];
+//				let size = width[Math.floor(Math.random()*3)];
+//				node.css("width", size);
+//				node.css("height", size);
+//			});
+//			this.layout({name: 'cose-bilkent', animationDuration: 1000}).run();
+//		},		
+		'style': [{
 			selector: 'node',
 			style: {
 				'label': 'data(name)',
+				'label-type': 'data(dde_node_type)',
 				'font-size': '10pt',
 				'text-halign': 'center',
 				'text-valign': 'center',
@@ -90,6 +108,80 @@ requirejs(["material", "cookie", "jquery", "cytoscape", "cytoscape-dagre"], func
 				'text-background-opacity': 1,
 				'text-background-shape': 'round-rectangle',
 				'text-background-padding': '1px'
+			}		
+		}, {
+			selector: '.node_begin',
+			style: {
+		        'background-color': '#BDBDBD',
+		        'shape': 'round-rectangle',
+		        'width': '100px',
+		        'height': '50px',
+			}		
+		}, {
+			selector: '.node_end',
+			style: {
+		        'background-color': '#BDBDBD',
+		        'shape': 'round-rectangle',
+		        'width': '100px',
+		        'height': '50px',
+			}		
+		}, {
+			selector: '.node_branch-prompt',
+			style: {
+		        'background-color': '#A5D6A7',
+		        'shape': 'round-diamond',
+		        'width': '50px',
+		        'height': '50px',
+			}		
+		}, {
+			selector: '.node_random-branch',
+			style: {
+		        'background-color': '#EF9A9A',
+		        'shape': 'round-diamond',
+		        'width': '50px',
+		        'height': '50px',
+			}		
+		}, {
+			selector: '.node_branch-conditions',
+			style: {
+		        'background-color': '#CE93D8',
+		        'shape': 'round-diamond',
+		        'width': '50px',
+		        'height': '50px',
+			}		
+		}, {
+			selector: '.node_echo',
+			style: {
+		        'background-color': '#90CAF9',
+		        'shape': 'round-tag',
+		        'width': '50px',
+		        'height': '50px',
+			}		
+		}, {
+			selector: '.node_pause',
+			style: {
+		        'background-color': '#90CAF9',
+		        'shape': 'round-rectangle',
+		        'width': '50px',
+		        'height': '50px',
+			}		
+		}, {
+			selector: '.node_alert',
+			style: {
+		        'background-color': '#D50000',
+		        'shape': 'vee',
+		        'width': '50px',
+		        'height': '50px',
+			}		
+		}, {
+			selector: '.node_group',
+			style: {
+		        'background-color': '#F5F5F5',
+		        'shape': 'round-rectangle',
+		        'text-valign': 'top',
+		        'text-halign': 'center',
+		        'text-margin-y': '-10px',
+		        'font-weight': 'bold',
 			}		
 		}]
 	});

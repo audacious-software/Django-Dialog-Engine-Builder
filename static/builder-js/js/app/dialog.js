@@ -223,9 +223,13 @@ define(modules, function (mdc, Node) {
 
                 itemHtml += '     <li class="mdc-list-item mdc-list-item--with-one-line builder-destination-item" role="menuitem" data-sort-name="' + item["name"] + '" id="' + cardId + '_destination_item_' + item['id'] + '" data-node-id="' + item['id'] + '" data-category="' + groupName + '">';
                 itemHtml += '       <span class="mdc-list-item__ripple"></span>';
+                
+                var sortName = item["id"];
 
                 if (item["name"] != undefined) {
-                    itemHtml += '       <span class="mdc-list-item__text mdc-list-item__start">' + item["name"] + '</span>';
+                    itemHtml += '       <span class="mdc-list-item__text mdc-list-item__start">' + item["name"] + ' </span>';
+
+	                sortName = item["name"];
                 } else {
                     itemHtml += '       <span class="mdc-list-item__text mdc-list-item__start">' + item["id"] + '</span>';
                 }
@@ -242,7 +246,10 @@ define(modules, function (mdc, Node) {
                     groupNames.push(groupName);
                 }
 
-                groupHtmls.push(itemHtml);
+                groupHtmls.push({
+                	'sort': sortName,
+                	'html': itemHtml
+                });
             }
 
             groupNames.sort();
@@ -258,10 +265,16 @@ define(modules, function (mdc, Node) {
 
                 var htmls = groups[groupName];
                 
-                htmls.sort();
+                htmls.sort(function(a, b) {
+                	if (a['sort'] == b['sort']) {
+                		return 0;
+                	}
+                	
+                	return (a['sort'] > b['sort'] ? 1 : -1);
+				});
 
                 for (var j = 0; j < htmls.length; j++) {
-                    body += htmls[j];
+                    body += htmls[j]['html'];
                 }
 
                 body += '      <li class="mdc-list-divider" role="separator"></li>';
@@ -347,6 +360,16 @@ define(modules, function (mdc, Node) {
                         var cardClass = window.dialogBuilder.cardMapping[cardType];
 
                         var cardDef = cardClass.createCard(cardName);
+                        
+                        console.log("LAST: ");
+						console.log(window.lastCardGroup);
+
+						console.log("CARD: ");
+						console.log(cardDef['builder_group']);
+
+		                if (window.lastCardGroup != undefined && window.lastCardGroup != '') {
+        		        	cardDef['builder_group'] = window.lastCardGroup;
+                		}
 
                         if (me.definition.includes(cardDef) == false) {
                             me.definition.push(cardDef);

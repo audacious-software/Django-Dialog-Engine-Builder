@@ -108,9 +108,12 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
             }
 
             itemHtml += '     <li class="mdc-list-item mdc-list-item--with-one-line builder-destination-item" role="menuitem" id="all_cards_destination_item_' + item['id'] + '" data-node-id="' + item['id'] + '" data-category="' + groupName + '">';
+            
+            var sortName = item["id"];
 
             if (item["name"] != undefined) {
                 itemHtml += '       <span class="mdc-list-item__text mdc-list-item__start">' + item["name"] + '</span>';
+                sortName = item["name"];
             } else {
                 itemHtml += '       <span class="mdc-list-item__text mdc-list-item__start">' + item["id"] + '</span>';
             }
@@ -127,7 +130,10 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
                 groupNames.push(groupName);
             }
 
-            groupHtmls.push(itemHtml);
+			groupHtmls.push({
+				'sort': sortName,
+				'html': itemHtml
+			});
         }
 
         groupNames.sort();
@@ -144,8 +150,18 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
             allCardSelectContent += '        <span class="mdc-layout-grid--align-right mdc-list-item__end material-icons destination_disclosure_icon">arrow_right</span>';
             allCardSelectContent += '      </li>';
 
+			var htmls = groups[groupName];
+			
+			htmls.sort(function(a, b) {
+				if (a['sort'] == b['sort']) {
+					return 0;
+				}
+				
+				return (a['sort'] > b['sort'] ? 1 : -1);
+			});
+
             for (var j = 0; j < htmls.length; j++) {
-                allCardSelectContent += htmls[j];
+                allCardSelectContent += htmls[j]['html'];
             }
         }
 
@@ -222,6 +238,8 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
                     current.html(html);
 
                     node.initialize();
+                    
+                    window.lastCardGroup = item['builder_group'];
                 },  100);
 
                 return;

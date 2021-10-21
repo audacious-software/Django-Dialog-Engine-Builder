@@ -91,6 +91,8 @@ define(modules, function (mdc) {
 
             if (me.definition["builder_group"] != undefined) {
                 groupField.value = me.definition["builder_group"];
+                
+                window.lastCardGroup = me.definition["builder_group"];
             }
 
             $('#' + this.cardId + '_group_value').on("change keyup paste", function() {

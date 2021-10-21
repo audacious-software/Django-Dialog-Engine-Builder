@@ -20,6 +20,9 @@ CARDS = (
     ('Raise Alert', 'alert',),
     ('Pause', 'pause',),
     ('External Choice', 'external-choice',),
+    ('Branching Conditions', 'branch-conditions',),
+    ('Interrupt', 'interrupt',),
+    ('Interrupt Resume', 'interrupt-resume',),
 )
 
 class Command(BaseCommand):

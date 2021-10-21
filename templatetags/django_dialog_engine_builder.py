@@ -1,6 +1,7 @@
 import json
 
 from django import template
+from django.utils.text import slugify
 
 register = template.Library()
 
@@ -10,6 +11,8 @@ def cytoscape_json(dialog):
 
     dialog_machine = dialog.dialog_machine()
 
+    group_nodes = []
+
     for node in dialog_machine.nodes():
         element = {
             'data': {
@@ -17,8 +20,16 @@ def cytoscape_json(dialog):
                 'name': node.node_name,
                 'dde_node_type': node.node_type(),
             },
+            'classes': ['node_' + node.node_type()],
             'group': 'nodes'
         }
+
+        if node.definition is not None:
+            if 'builder_group' in node.definition:
+                if (node.definition['builder_group'] in group_nodes) is False:
+                    group_nodes.append(node.definition['builder_group'])
+
+                element['data']['parent'] = slugify('dde_group_' + node.definition['builder_group'])
 
         elements.append(element)
 
@@ -36,5 +47,18 @@ def cytoscape_json(dialog):
                 }
 
                 elements.append(edge)
+
+    for node_group in group_nodes:
+        element = {
+            'data': {
+                'id': slugify('dde_group_' + node_group),
+                'name': node_group,
+                'dde_node_type': 'group',
+            },
+            'classes': ['node_group'],
+            'group': 'nodes'
+        }
+
+        elements.append(element)
 
     return json.dumps(elements, indent=2)
