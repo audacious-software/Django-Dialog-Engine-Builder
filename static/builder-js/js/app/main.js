@@ -38,6 +38,7 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
     const topAppBar = mdc.topAppBar.MDCTopAppBar.attachTo(document.getElementById('app-bar'));
 
     var selectedDialog = null;
+    var dialogIsDirty = false;
 
     topAppBar.setScrollTarget(document.getElementById('main-content'));
 
@@ -47,6 +48,8 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
 
     function onDialogChanged(changedId) {
         $("#action_save").show();
+        
+        dialogIsDirty = true;
     }
 
     function slugify(text){
@@ -66,6 +69,8 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
         window.dialogBuilder.reloadDialog();
 
         $("#action_save").show();
+
+        dialogIsDirty = true;
     }
 
     window.dialogBuilder.loadDialog = function(definition, initialId) {
@@ -254,7 +259,7 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
             eventObj.preventDefault();
             if (window.dialogBuilder.update != undefined) {
                 window.dialogBuilder.update(selectedDialog.name, data, function() {
-
+                	dialogIsDirty = false;
                 }, function(error) {
                     console.log(error);
                 });
@@ -351,6 +356,8 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
 					
                     $("#action_save").show();
 
+			        dialogIsDirty = true;
+
                     window.dialogBuilder.editDialogModal.unlisten('MDCDialog:closed', this);
                }
             }
@@ -430,4 +437,20 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
     mdc.tooltip.MDCTooltip.attachTo(document.getElementById('action_edit_dialog_tip'));
     mdc.tooltip.MDCTooltip.attachTo(document.getElementById('action_add_interrupt_tip'));
     mdc.tooltip.MDCTooltip.attachTo(document.getElementById('action_save_tip'));
+    
+	window.addEventListener('beforeunload', function(e) {
+		e = e || window.event;
+		
+		if (dialogIsDirty) {
+	        e.preventDefault();
+	        
+			if (e) {
+				e.returnValue = 'You have unsaved changes. Are you sure you want to exit now?';
+			}
+
+			return e.returnValue;	
+		}
+		
+  		delete e['returnValue'];
+	});    
 });
