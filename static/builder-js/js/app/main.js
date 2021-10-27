@@ -83,8 +83,6 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
         selectedDialog.selectInitialNode(initialId);
     };
 
-    $("#action_save").hide();
-
     window.dialogBuilder.reloadDialog = function() {
         $(".go_home").off("click");
         $(".go_home").click(function(eventObj) {
@@ -256,7 +254,7 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
             eventObj.preventDefault();
             if (window.dialogBuilder.update != undefined) {
                 window.dialogBuilder.update(selectedDialog.name, data, function() {
-                    $("#action_save").hide();
+
                 }, function(error) {
                     console.log(error);
                 });
@@ -395,6 +393,24 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
         };
 
         window.dialogBuilder.addInterruptDialog.listen('MDCDialog:closed', addInterruptListener);
+
+        window.dialogBuilder.viewStructureDialog = mdc.dialog.MDCDialog.attachTo(document.getElementById('preview-dialog'));
+        
+        $("#action_view_structure").click(function(eventObj) {
+            eventObj.preventDefault();
+
+			$("#preview-dialog-canvas").height(parseInt($(window).height() * 0.9));
+			$("#preview-dialog-canvas").width(parseInt($(window).width() * 0.9));
+
+			$("#preview-dialog-content").height($("#preview-dialog-canvas").height());
+			$("#preview-dialog-content").css("overflow", "hidden");
+
+            window.dialogBuilder.viewStructureDialog.open();
+            
+            window.setTimeout(function() {
+				$('#preview-dialog-canvas').attr('src', window.dialogBuilder.visualization);
+            }, 100)
+        });
     });
 
     var viewportHeight = $(window).height();
@@ -408,4 +424,10 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
     $("#builder_source_nodes").height(columnHeight);
     $("#builder_current_node").height(columnHeight);
     $("#builder_next_nodes").height(columnHeight);
+    
+    mdc.tooltip.MDCTooltip.attachTo(document.getElementById('action_view_structure_tip'));
+    mdc.tooltip.MDCTooltip.attachTo(document.getElementById('action_select_card_tip'));
+    mdc.tooltip.MDCTooltip.attachTo(document.getElementById('action_edit_dialog_tip'));
+    mdc.tooltip.MDCTooltip.attachTo(document.getElementById('action_add_interrupt_tip'));
+    mdc.tooltip.MDCTooltip.attachTo(document.getElementById('action_save_tip'));
 });

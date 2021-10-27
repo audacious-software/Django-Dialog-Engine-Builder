@@ -64,6 +64,7 @@ define(modules, function (mdc) {
                 htmlString += '            <div class="mdc-notched-outline__trailing"></div>';
                 htmlString += '          </div>';
                 htmlString += '        </div>';
+                htmlString += '        <div class="mdc-typography--caption">' + this['id']  + '</div>';
                 htmlString += '      </div>';
                 htmlString += this.editBody();
                 htmlString += '    </div>';

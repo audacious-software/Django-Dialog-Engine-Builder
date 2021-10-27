@@ -1,0 +1,18 @@
+{% load static %}
+{% load django_dialog_engine_builder %}
+<!doctype html>
+<html lang="en">
+    <body  style="padding: 0px; margin: 0px;">
+		<div id="cytoscape_canvas" style="padding: 0px; margin: 0px; background-color: #eeeeee;">
+    </body>
+    
+    <script>
+        window.visualizationOptions = {
+            name: "{{ dialog.name }}",
+            source: {{ dialog|cytoscape_json|safe }},
+            container: "#cytoscape_canvas"
+        };
+    </script>
+
+    <script data-main="{% static 'builder-js/js/app/view-min.js' %}" src="{% static 'builder-js/vendor/require.js' %}"></script>
+</html>

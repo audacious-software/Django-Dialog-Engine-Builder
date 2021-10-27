@@ -51,11 +51,27 @@
                     <span id="dialog-identifier" style="display: none;">{{ dialog.identifier }}</span>
                 </section>
                 <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end" role="toolbar">
-                    <a href="#" class="material-icons mdc-top-app-bar__action-item" aria-label="Select Card" id="action_select_card" style="margin-left: 11px;">collections</a>
-                    <a href="#" class="material-icons mdc-top-app-bar__action-item" aria-label="Add Interrupt" id="action_add_interrupt" style="margin-left: 11px;">announcement</a>
-                    <a href="#" class="material-icons mdc-top-app-bar__action-item" aria-label="Edit Sequence" id="action_edit_dialog" style="margin-left: 11px;">edit</a>
-                    <a href="#" class="material-icons mdc-top-app-bar__action-item" aria-label="Save" id="action_save" style="margin-left: 11px;">save</a>
+                    <a href="#" class="material-icons mdc-top-app-bar__action-item" aria-label="View Structure" aria-describedby="action_view_structure_tip" id="action_view_structure" style="margin-left: 11px;">schema</a>
+                    <a href="#" class="material-icons mdc-top-app-bar__action-item" aria-label="Select Card"  aria-describedby="action_select_card_tip" id="action_select_card" style="margin-left: 11px;">collections</a>
+                    <a href="#" class="material-icons mdc-top-app-bar__action-item" aria-label="Add Interrupt"  aria-describedby="action_add_interrupt_tip" id="action_add_interrupt" style="margin-left: 11px;">announcement</a>
+                    <a href="#" class="material-icons mdc-top-app-bar__action-item" aria-label="Edit Sequence"  aria-describedby="action_edit_dialog_tip" id="action_edit_dialog" style="margin-left: 11px;">edit</a>
+                    <a href="#" class="material-icons mdc-top-app-bar__action-item" aria-label="Save"  aria-describedby="action_save_tip" id="action_save" style="margin-left: 11px;">save</a>
                 </section>
+                <div id="action_view_structure_tip" class="mdc-tooltip" role="tooltip" aria-hidden="true">
+					<div class="mdc-tooltip__surface mdc-tooltip__surface-animation">View dialog structure</div>
+				</div>
+                <div id="action_select_card_tip" class="mdc-tooltip" role="tooltip" aria-hidden="true">
+					<div class="mdc-tooltip__surface mdc-tooltip__surface-animation">Jump to specific card</div>
+				</div>
+                <div id="action_add_interrupt_tip" class="mdc-tooltip" role="tooltip" aria-hidden="true">
+					<div class="mdc-tooltip__surface mdc-tooltip__surface-animation">Add interrupt</div>
+				</div>
+                <div id="action_edit_dialog_tip" class="mdc-tooltip" role="tooltip" aria-hidden="true">
+					<div class="mdc-tooltip__surface mdc-tooltip__surface-animation">Edit dialog settings</div>
+				</div>
+                <div id="action_save_tip" class="mdc-tooltip" role="tooltip" aria-hidden="true">
+					<div class="mdc-tooltip__surface mdc-tooltip__surface-animation">Save dialog</div>
+				</div>
             </div>
         </header>
 
@@ -313,6 +329,21 @@
             <div class="mdc-dialog__scrim"></div>
         </div>
 
+        <div class="mdc-dialog" role="alertdialog" aria-modal="true" id="preview-dialog"  aria-labelledby="preview-dialog-title" aria-describedby="preview-dialog-content">
+            <div class="mdc-dialog__container">
+                <div class="mdc-dialog__surface" style="max-width: none;">
+					<div class="mdc-dialog__header">
+						<h2 class="mdc-dialog__title" id="preview-dialog-title" style="display: inline-block;">Structure View</h2>
+						<button class="mdc-button material-icons" style="float: right; margin-top: 12px;" data-mdc-dialog-action="close">close</button>
+					</div>
+                    <div class="mdc-dialog__content" id="preview-dialog-content" style="padding: 0px;">
+						<iframe title="Structure View" id="preview-dialog-canvas" style="border-top: thin solid gray; border-bottom: thin solid gray; border-left: none; border-right: none; background-color: #eeeeee;" scrolling="no"></iframe> 
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="mdc-dialog__scrim"></div> -->
+        </div>
+
         {% csrf_token %}
     </body>
     
@@ -332,7 +363,8 @@
                 $.post("{% url 'builder_dialog' dialog.pk %}", payload, function(data) {
                     success();
                 });
-            }
+            },
+            visualization: "{% url 'builder_dialog_html_view' dialog.pk %}"
         };
     </script>
 

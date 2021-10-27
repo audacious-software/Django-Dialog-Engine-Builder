@@ -112,4 +112,7 @@ def builder_dialog_html_view(request, dialog): # pylint: disable=unused-argument
         'dialog': DialogScript.objects.filter(pk=str(dialog)).first()
     }
 
-    return render(request, 'builder_view.html', context=context)
+    response = render(request, 'builder_view_min.html', context=context)
+    response['X-Frame-Options'] = 'SAMEORIGIN'
+
+    return response
