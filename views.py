@@ -25,11 +25,14 @@ def builder_dialog(request, dialog): # pylint: disable=unused-argument
     context['dialog'] = DialogScript.objects.filter(pk=str(dialog)).first()
 
     card_modules = []
+    card_types = []
 
     for card in InteractionCard.objects.filter(enabled=True):
         card_modules.append(reverse('builder_interaction_card', args=[card.identifier]))
+        card_types.append(card.identifier)
 
     context['card_modules_json'] = mark_safe(json.dumps(card_modules)) # nosec
+    context['card_types'] = card_types
 
     if request.method == 'POST':
         if 'definition' in request.POST:

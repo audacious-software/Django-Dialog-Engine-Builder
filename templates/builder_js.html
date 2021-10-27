@@ -259,17 +259,46 @@
             <div class="mdc-dialog__container">
                 <div class="mdc-dialog__surface">
                     <h2 class="mdc-dialog__title" id="add-interrupt-dialog-title">Add Interrupt</h2>
-                    <div class="mdc-dialog__content" id="add-interrupt-dialog-content">
-                        <div class="mdc-text-field mdc-text-field--outlined" id="add-interrupt-name" style="width: 100%; margin-top: 8px;">
-                            <input type="text" class="mdc-text-field__input" id="add-interrupt-name-value">
-                            <div class="mdc-notched-outline">
-                                <div class="mdc-notched-outline__leading"></div>
-                                <div class="mdc-notched-outline__notch">
-                                    <label for="add-card-name-value" class="mdc-floating-label">Interrupt Name</label>
-                                </div>
-                                <div class="mdc-notched-outline__trailing"></div>
-                            </div>
-                        </div>
+                    <div class="mdc-dialog__content mdc-layout-grid" id="add-interrupt-dialog-content">
+	                    <div class="mdc-layout-grid__inner">
+							<div class="mdc-text-field mdc-text-field--outlined mdc-layout-grid__cell mdc-layout-grid__cell--span-12" id="add-interrupt-name" style="width: 100%; margin-top: 8px;">
+								<input type="text" class="mdc-text-field__input" id="add-interrupt-name-value">
+								<div class="mdc-notched-outline">
+									<div class="mdc-notched-outline__leading"></div>
+									<div class="mdc-notched-outline__notch">
+										<label for="add-card-name-value" class="mdc-floating-label">Interrupt Name</label>
+									</div>
+									<div class="mdc-notched-outline__trailing"></div>
+								</div>
+							</div>
+
+							{% if 'interrupt' in card_types %}
+								<div class="mdc-form-field mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
+									<div class="mdc-radio">
+										<input class="mdc-radio__native-control" type="radio" id="interrupt-type-interrupt" name="add-interrupt-type" value='interrupt'>
+										<div class="mdc-radio__background">
+											<div class="mdc-radio__outer-circle"></div>
+											<div class="mdc-radio__inner-circle"></div>
+										</div>
+										<div class="mdc-radio__ripple"></div>
+									</div>
+									<label for="interrupt-type-interrupt">Response Keyword</label>
+								</div>
+							{% endif %}
+							{% if 'time-elapsed-interrupt' in card_types %}
+								<div class="mdc-form-field mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
+									<div class="mdc-radio">
+										<input class="mdc-radio__native-control" type="radio" id="interrupt-type-time-elapsed-interrupt" name="add-interrupt-type" value='time-elapsed-interrupt'>
+										<div class="mdc-radio__background">
+											<div class="mdc-radio__outer-circle"></div>
+											<div class="mdc-radio__inner-circle"></div>
+										</div>
+										<div class="mdc-radio__ripple"></div>
+									</div>
+									<label for="interrupt-type-interrupt">Time Elapsed</label>
+								</div>
+							{% endif %}
+	                    </div>
                     </div>
                     <footer class="mdc-dialog__actions">
                         <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="cancel">

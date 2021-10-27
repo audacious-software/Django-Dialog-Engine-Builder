@@ -23,6 +23,7 @@ CARDS = (
     ('Branching Conditions', 'branch-conditions',),
     ('Interrupt', 'interrupt',),
     ('Interrupt Resume', 'interrupt-resume',),
+    ('Time-Elapsed Interrupt', 'time-elapsed-interrupt',),
 )
 
 class Command(BaseCommand):

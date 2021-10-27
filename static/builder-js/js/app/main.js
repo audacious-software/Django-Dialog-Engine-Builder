@@ -361,10 +361,15 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
         window.dialogBuilder.editDialogModal.listen('MDCDialog:closed', renameListener);
         
         window.dialogBuilder.addInterruptDialog = mdc.dialog.MDCDialog.attachTo(document.getElementById('add-interrupt-dialog'));
+
         const interruptName = mdc.textField.MDCTextField.attachTo(document.getElementById('add-interrupt-name'));
 
         $("#action_add_interrupt").click(function(eventObj) {
             eventObj.preventDefault();
+            
+            interruptName.value = "New Interrupt";
+            
+            $("input[name='add-interrupt-type']").first().prop("checked", true);
 
             window.dialogBuilder.addInterruptDialog.open();
         });
@@ -372,26 +377,24 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
         var addInterruptListener = {
             handleEvent: function (event) {
                 if (event.detail.action == "add_interrupt") {
-					var cardClass = window.dialogBuilder.cardMapping['interrupt'];
+                	var cardType = $('input[type="radio"][name="add-interrupt-type"]:checked').val();
+                	
+					var cardClass = window.dialogBuilder.cardMapping[cardType];
 
 					var cardDef = cardClass.createCard(interruptName.value);
-					
-					console.log("DIALOG");
-					console.log(window.dialogBuilder.dialog);
 
 					if (window.dialogBuilder.dialog.includes(cardDef) == false) {
 						window.dialogBuilder.dialog.push(cardDef);
 					}
-
-                    window.dialogBuilder.addInterruptDialog.unlisten('MDCDialog:closed', this);
                     
+                    selectedDialog.markChanged(cardDef['id'])
+
                     window.dialogBuilder.loadNodeById(cardDef['id']);
                }
             }
         };
 
         window.dialogBuilder.addInterruptDialog.listen('MDCDialog:closed', addInterruptListener);
-
     });
 
     var viewportHeight = $(window).height();
