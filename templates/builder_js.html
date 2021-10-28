@@ -344,6 +344,19 @@
             <!-- <div class="mdc-dialog__scrim"></div> -->
         </div>
 
+
+        <div class="mdc-dialog" role="alertdialog" aria-modal="true" id="outstanding-issues-dialog"  aria-labelledby="outstanding-issues-title" aria-describedby=outstanding-issues-content">
+            <div class="mdc-dialog__container">
+                <div class="mdc-dialog__surface">
+                    <h2 class="mdc-dialog__title" id="outstanding-issues-title">Outstanding Dialog Issues</h2>
+                    <div class="mdc-dialog__content" id="outstanding-issues-content" style="padding: 0;">
+                    	<ul class="mdc-list mdc-list--two-line" id="outstanding-issues-items"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         {% csrf_token %}
     </body>
     

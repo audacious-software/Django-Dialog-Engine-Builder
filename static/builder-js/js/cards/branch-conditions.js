@@ -8,12 +8,12 @@ define(modules, function (mdc, Node) {
 
         editBody() {
             var destinationNodes = this.destinationNodes(this);
-            
+
             var body = '';
 
             for (var i = 0; i < this.definition['actions'].length; i++) {
-            	var action = this.definition['actions'][i];
-            	
+                var action = this.definition['actions'][i];
+
                 body += '<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">';
                 body += '  <div class="mdc-text-field mdc-text-field--outlined" id="' + this.cardId + '_condition_value_' + i + '"  style="width: 100%">';
                 body += '    <input type="text" class="mdc-text-field__input" id="' + this.cardId + '_condition_value_' + i + '_value">';
@@ -27,18 +27,18 @@ define(modules, function (mdc, Node) {
                 body += '  </div>';
                 body += '</div>';
 
-				body += '<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-7">';
-				body += '  <p class="mdc-typography--body1">Python Conditional Matches:</p>';
-				body += '</div>';
+                body += '<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-7">';
+                body += '  <p class="mdc-typography--body1">Python Conditional Matches:</p>';
+                body += '</div>';
 
-				body += '<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-5" style="padding-top: 8px; text-align: right;">';
-				body += '  <button class="mdc-icon-button" id="' + this.cardId + '_next_edit_' + i + '">';
-				body += '    <i class="material-icons mdc-icon-button__icon" aria-hidden="true">create</i>';
-				body += '  </button>';
-				body += '  <button class="mdc-icon-button" id="' + this.cardId + '_next_goto_' + i + '">';
-				body += '    <i class="material-icons mdc-icon-button__icon" aria-hidden="true">navigate_next</i>';
-				body += '  </button>';
-				body += '</div>';
+                body += '<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-5" style="padding-top: 8px; text-align: right;">';
+                body += '  <button class="mdc-icon-button" id="' + this.cardId + '_next_edit_' + i + '">';
+                body += '    <i class="material-icons mdc-icon-button__icon" aria-hidden="true">create</i>';
+                body += '  </button>';
+                body += '  <button class="mdc-icon-button" id="' + this.cardId + '_next_goto_' + i + '">';
+                body += '    <i class="material-icons mdc-icon-button__icon" aria-hidden="true">navigate_next</i>';
+                body += '  </button>';
+                body += '</div>';
             }
 
             body += '<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12" style="text-align: right; border-bottom: thin solid #AAABAA; padding-bottom: 20px;">';
@@ -55,7 +55,7 @@ define(modules, function (mdc, Node) {
             body += '  <button class="mdc-icon-button" id="' + this.cardId + '_condition_edit_not_found">';
             body += '    <i class="material-icons mdc-icon-button__icon" aria-hidden="true">create</i>';
             body += '  </button>';
-            
+
             if (this.definition["no_match"] != undefined) {
                 body += '  <button class="mdc-icon-button" id="' + this.cardId + '_condition_click_not_found">';
                 body += '    <i class="material-icons mdc-icon-button__icon" aria-hidden="true">navigate_next</i>';
@@ -72,7 +72,7 @@ define(modules, function (mdc, Node) {
             body += '  <button class="mdc-icon-button" id="' + this.cardId + '_condition_edit_error">';
             body += '    <i class="material-icons mdc-icon-button__icon" aria-hidden="true">create</i>';
             body += '  </button>';
-            
+
             if (this.definition["no_match"] != undefined) {
                 body += '  <button class="mdc-icon-button" id="' + this.cardId + '_condition_click_error">';
                 body += '    <i class="material-icons mdc-icon-button__icon" aria-hidden="true">navigate_next</i>';
@@ -92,36 +92,36 @@ define(modules, function (mdc, Node) {
             body += '  </div>';
             body += '  <div class="mdc-dialog__scrim"></div>';
             body += '</div>';
-            
+
             return body;
         }
 
         viewBody() {
             var summary = '<div class="mdc-typography--body1" style="margin: 16px;">Conditions evaluated:</em></div>';
-            
+
             for (var i = 0; i < this.definition['actions'].length; i++) {
                 var action = this.definition['actions'][i];
-                
+
                 var actionNode = this.dialog.resolveNode(action['action']);
-                
+
                 if (actionNode != null) {
-	                summary += '<div class="mdc-typography--body1" style="margin: 16px;">' + action['condition'] + ': go to <em>' + actionNode.cardName() + '</em>.</div>';
-	            } else {
-	                summary += '<div class="mdc-typography--body1" style="margin: 16px;">' + action['condition'] + ': go to <em>None Selected</em>.</div>';
-	            }
+                    summary += '<div class="mdc-typography--body1" style="margin: 16px;">' + action['condition'] + ': go to <em>' + actionNode.cardName() + '</em>.</div>';
+                } else {
+                    summary += '<div class="mdc-typography--body1" style="margin: 16px;">' + action['condition'] + ': go to <em>None Selected</em>.</div>';
+                }
             }
-            
+
             if (this.definition['no_match'] != undefined && this.definition['no_match'] != '') {
                 var node = this.dialog.resolveNode(this.definition['no_match']);
 
                 summary += '<div class="mdc-typography--body1" style="margin: 16px;">';
 
                 if (node != null) {
-	                summary += "If responses doesn't match a pattern, go to <em>" + node.cardName() + '</em>.';
-	            } else {
-	                summary += "If responses doesn't match a pattern, go to <em>None Selected</em>.";
-				}
-					            
+                    summary += "If responses doesn't match a pattern, go to <em>" + node.cardName() + '</em>.';
+                } else {
+                    summary += "If responses doesn't match a pattern, go to <em>None Selected</em>.";
+                }
+
                 summary += '</div>';
             }
 
@@ -131,20 +131,20 @@ define(modules, function (mdc, Node) {
                 summary += '<div class="mdc-typography--body1" style="margin: 16px;">';
 
                 if (node != null) {
-	                summary += "If an error is encountered, go to <em>" + node.cardName() + '</em>.';
-	            } else {
-	                summary += "If an error is encountered, go to <em>None Selected</em>.";
-				}
-					            
+                    summary += "If an error is encountered, go to <em>" + node.cardName() + '</em>.';
+                } else {
+                    summary += "If an error is encountered, go to <em>None Selected</em>.";
+                }
+
                 summary += '</div>';
             }
-            
+
             return summary;
         }
 
         initialize() {
             super.initialize();
-            
+
             const me = this;
 
             const nextDialog = mdc.dialog.MDCDialog.attachTo(document.getElementById(me.cardId + '-edit-dialog'));
@@ -153,7 +153,7 @@ define(modules, function (mdc, Node) {
                 if (me.targetAction == "error") {
                     me.definition['error'] = selected;
                 } else if (me.targetAction != null) {
-                	me.targetAction['action'] = selected;
+                    me.targetAction['action'] = selected;
                 } else {
                     me.definition['no_match'] = selected;
                 }
@@ -165,98 +165,98 @@ define(modules, function (mdc, Node) {
             for (var i = 0; i < this.definition['actions'].length; i++) {
                 const conditionIndex = i;
 
-            	const action = this.definition['actions'][i];
-            	
+                const action = this.definition['actions'][i];
+
                 const identifier = this.cardId + '_condition_value_' + i;
                 const conditionField = mdc.textField.MDCTextField.attachTo(document.getElementById(identifier));
-                
+
                 if (me.definition['actions'][conditionIndex]['condition'] != undefined) {
-                	conditionField.value = me.definition['actions'][conditionIndex]['condition'];
+                    conditionField.value = me.definition['actions'][conditionIndex]['condition'];
                 }
-                
+
                 $("#" + identifier  + '_value').on("change keyup", function() {
                     var value = $('#' + identifier + '_value').val();
-                    
+
                     console.log("VALUE[" + conditionIndex + "] => " + value + ' // ' + identifier);
-                
+
                     if (me.definition['actions'][conditionIndex]['condition'] == "" && value == "") {
                         me.definition['actions'].splice(conditionIndex, 1);
                         me.dialog.loadNode(me.definition);
                     } else {
-	                    me.definition['actions'][conditionIndex]['condition'] = value;
-	                }
+                        me.definition['actions'][conditionIndex]['condition'] = value;
+                    }
 
-	                me.dialog.markChanged(me.id);
+                    me.dialog.markChanged(me.id);
                 });
 
                 $("#" + identifier  + '_value').on("paste", function() {
-                	window.setTimeout(function() {
-						var value = $('#' + identifier + '_value').val();
-					
-						console.log("VALUE-P[" + conditionIndex + "] => " + value + ' // ' + identifier);
-				
-						me.definition['actions'][conditionIndex]['condition'] = value;
+                    window.setTimeout(function() {
+                        var value = $('#' + identifier + '_value').val();
 
-						me.dialog.markChanged(me.id);
-					}, 5);
+                        console.log("VALUE-P[" + conditionIndex + "] => " + value + ' // ' + identifier);
+
+                        me.definition['actions'][conditionIndex]['condition'] = value;
+
+                        me.dialog.markChanged(me.id);
+                    }, 5);
                 });
 
-                
-				$('#' + this.cardId + '_next_edit_' + i).on("click", function() {
-					me.targetAction = action;
-				
-					nextDialog.open();
-				});
 
-				$('#' + this.cardId + '_next_goto_' + i).on("click", function() {
-					var destinationNodes = me.destinationNodes(me.dialog);
-				
-					for (var i = 0; i < destinationNodes.length; i++) {
-						const destinationNode = destinationNodes[i];
+                $('#' + this.cardId + '_next_edit_' + i).on("click", function() {
+                    me.targetAction = action;
 
-						if (action['action'] == destinationNode["id"]) {
-							$("#builder_next_nodes [data-node-id='" + destinationNode["id"] + "']").css("background-color", "#ffffff");
-						} else {
-							$("#builder_next_nodes [data-node-id='" + destinationNode["id"] + "']").css("background-color", "#e0e0e0");
-						}
-					}
+                    nextDialog.open();
+                });
 
-					var sourceNodes = me.sourceNodes(me.dialog);
-				
-					for (var i = 0; i < sourceNodes.length; i++) {
-						const sourceNode = sourceNodes[i];
+                $('#' + this.cardId + '_next_goto_' + i).on("click", function() {
+                    var destinationNodes = me.destinationNodes(me.dialog);
 
-						if (action['action'] == sourceNode["id"]) {
-							$("#builder_source_nodes [data-node-id='" + sourceNode["id"] + "']").css("background-color", "#ffffff");
-						} else {
-							$("#builder_source_nodes [data-node-id='" + sourceNode["id"] + "']").css("background-color", "#e0e0e0");
-						}
-					}
-				});
+                    for (var i = 0; i < destinationNodes.length; i++) {
+                        const destinationNode = destinationNodes[i];
+
+                        if (action['action'] == destinationNode["id"]) {
+                            $("#builder_next_nodes [data-node-id='" + destinationNode["id"] + "']").css("background-color", "#ffffff");
+                        } else {
+                            $("#builder_next_nodes [data-node-id='" + destinationNode["id"] + "']").css("background-color", "#e0e0e0");
+                        }
+                    }
+
+                    var sourceNodes = me.sourceNodes(me.dialog);
+
+                    for (var i = 0; i < sourceNodes.length; i++) {
+                        const sourceNode = sourceNodes[i];
+
+                        if (action['action'] == sourceNode["id"]) {
+                            $("#builder_source_nodes [data-node-id='" + sourceNode["id"] + "']").css("background-color", "#ffffff");
+                        } else {
+                            $("#builder_source_nodes [data-node-id='" + sourceNode["id"] + "']").css("background-color", "#e0e0e0");
+                        }
+                    }
+                });
             }
 
             $('#' + this.cardId + '_add_condition').on("click", function() {
                 me.definition['actions'].push({
-                	"condition": "",
-                	"action": me.id
+                    "condition": "",
+                    "action": me.id
                 });
 
-                me.dialog.loadNode(me.definition);    
+                me.dialog.loadNode(me.definition);
                 me.dialog.markChanged(me.id);
             });
 
             $('#' + this.cardId + '_condition_edit_not_found').on("click", function() {
-            	me.targetAction = null;
-                
+                me.targetAction = null;
+
                 nextDialog.open();
             });
 
 
             $('#' + this.cardId + '_condition_click_not_found').on("click", function() {
                 var destinationNodes = me.destinationNodes(me.dialog);
-                
+
                 var found = false;
-                
+
                 for (var i = 0; i < destinationNodes.length; i++) {
                     const destinationNode = destinationNodes[i];
 
@@ -269,28 +269,28 @@ define(modules, function (mdc, Node) {
 
                 var sourceNodes = me.sourceNodes(me.dialog);
 
-				for (var i = 0; i < sourceNodes.length; i++) {
-					const sourceNode = sourceNodes[i];
+                for (var i = 0; i < sourceNodes.length; i++) {
+                    const sourceNode = sourceNodes[i];
 
-					if (me.definition["no_match"]  == sourceNode["id"]) {
-						$("#builder_source_nodes [data-node-id='" + sourceNode["id"] + "']").css("background-color", "#ffffff");
-					} else {
-						$("#builder_source_nodes [data-node-id='" + sourceNode["id"] + "']").css("background-color", "#e0e0e0");
-					}
-				}
+                    if (me.definition["no_match"]  == sourceNode["id"]) {
+                        $("#builder_source_nodes [data-node-id='" + sourceNode["id"] + "']").css("background-color", "#ffffff");
+                    } else {
+                        $("#builder_source_nodes [data-node-id='" + sourceNode["id"] + "']").css("background-color", "#e0e0e0");
+                    }
+                }
             });
 
-			$('#' + this.cardId + '_condition_edit_error').on("click", function() {
-				me.targetAction = "error";
+            $('#' + this.cardId + '_condition_edit_error').on("click", function() {
+                me.targetAction = "error";
 
-				nextDialog.open();
-			});
+                nextDialog.open();
+            });
 
             $('#' + this.cardId + '_condition_click_error').on("click", function() {
                 var destinationNodes = me.destinationNodes(me.dialog);
-                
+
                 var found = false;
-                
+
                 for (var i = 0; i < destinationNodes.length; i++) {
                     const destinationNode = destinationNodes[i];
 
@@ -305,106 +305,140 @@ define(modules, function (mdc, Node) {
 
                 var sourceNodes = me.sourceNodes(me.dialog);
 
-				for (var i = 0; i < sourceNodes.length; i++) {
-					const sourceNode = sourceNodes[i];
+                for (var i = 0; i < sourceNodes.length; i++) {
+                    const sourceNode = sourceNodes[i];
 
-					if (me.definition["error"] == sourceNode["id"]) {
-						$("#builder_source_nodes [data-node-id='" + sourceNode["id"] + "']").css("background-color", "#ffffff");
-					} else {
-						$("#builder_source_nodes [data-node-id='" + sourceNode["id"] + "']").css("background-color", "#e0e0e0");
-					}
-				}
+                    if (me.definition["error"] == sourceNode["id"]) {
+                        $("#builder_source_nodes [data-node-id='" + sourceNode["id"] + "']").css("background-color", "#ffffff");
+                    } else {
+                        $("#builder_source_nodes [data-node-id='" + sourceNode["id"] + "']").css("background-color", "#e0e0e0");
+                    }
+                }
             });
         }
 
         destinationNodes(dialog) {
             var nodes = super.destinationNodes(dialog);
-            
+
             var includedIds = [];
-            
+
             for (var j = 0; j < this.definition["actions"].length; j++) {
-				var id = this.definition["actions"][j]["action"];
-				
-				if (includedIds.indexOf(id) == -1) {
-					for (var i = 0; i < dialog.definition.length; i++) {
-						var item = dialog.definition[i];
-				
-						if (item['id'] == id) {
-							nodes.push(Node.createCard(item, dialog));
-						}
-					}
-					
-					includedIds.push(id);
-				}
-			}
-            
+                var id = this.definition["actions"][j]["action"];
+
+                if (includedIds.indexOf(id) == -1) {
+                    for (var i = 0; i < dialog.definition.length; i++) {
+                        var item = dialog.definition[i];
+
+                        if (item['id'] == id) {
+                            nodes.push(Node.createCard(item, dialog));
+                        }
+                    }
+
+                    includedIds.push(id);
+                }
+            }
+
             var id = this.definition['error'];
-		
-			if (includedIds.indexOf(id) == -1) {
-				for (var i = 0; i < dialog.definition.length; i++) {
-					var item = dialog.definition[i];
-				
-					if (item['id'] == id) {
-						nodes.push(Node.createCard(item, dialog));
-						
-						includedIds.push(id);
-					}
-				}
-			}
+
+            if (includedIds.indexOf(id) == -1) {
+                for (var i = 0; i < dialog.definition.length; i++) {
+                    var item = dialog.definition[i];
+
+                    if (item['id'] == id) {
+                        nodes.push(Node.createCard(item, dialog));
+
+                        includedIds.push(id);
+                    }
+                }
+            }
 
             id = this.definition['no_match'];
-		
-			if (includedIds.indexOf(id) == -1) {
-				for (var i = 0; i < dialog.definition.length; i++) {
-					var item = dialog.definition[i];
-				
-					if (item['id'] == id) {
-						nodes.push(Node.createCard(item, dialog));
 
-						includedIds.push(id);
-					}
-				}
-			}
-			
+            if (includedIds.indexOf(id) == -1) {
+                for (var i = 0; i < dialog.definition.length; i++) {
+                    var item = dialog.definition[i];
+
+                    if (item['id'] == id) {
+                        nodes.push(Node.createCard(item, dialog));
+
+                        includedIds.push(id);
+                    }
+                }
+            }
+
             return nodes;
         }
 
         updateReferences(oldId, newId) {
-        	$.each(this['actions'], function(index, value) {
-        		if (value['action'] == oldId) {
-        			value['action'] = newId;
-        		}
-        	});
+            $.each(this['actions'], function(index, value) {
+                if (value['action'] == oldId) {
+                    value['action'] = newId;
+                }
+            });
+        }
+
+        issues() {
+            var issues = super.issues();
+
+            const me = this
+
+            $.each(this['actions'], function(index, value) {
+                if (value['action'] == undefined) {
+                    issues.push([me.definition['id'], 'Branch ' + (1 + i) + ' does not point to another node.', me.definition['name']]);
+                } else if (value['action'] == me.definition['id']) {
+                    issues.push([me.definition['id'], 'Branch ' + (1 + i) + ' points to self.', me.definition['name']]);
+                } else if (this.isValidDestination(value['action']) == false) {
+                    issues.push([me.definition['id'], 'Branch ' + (1 + i) + ' points to a non-existent node.', me.definition['name']]);
+                }
+            });
+
+            if (this.definition['no_match'] == undefined) {
+                issues.push([this.definition['id'], 'No-match node does not point to another node.'], this.definition['name']);
+            } else if (this.definition['no_match'] == this.definition['id']) {
+                issues.push([this.definition['id'], 'No-match node points to self.', this.definition['name']]);
+            } else if (this.isValidDestination(this.definition['no_match']) == false) {
+                issues.push([this.definition['id'], 'No-match node points to a non-existent node.', this.definition['name']]);
+            }
+
+            if (this.definition['error'] == undefined) {
+                issues.push([this.definition['id'], 'Error node does not point to another node.', this.definition['name']]);
+            } else if (this.definition['error'] == this.definition['id']) {
+                issues.push([this.definition['id'], 'Error node points to self.', this.definition['name']]);
+            } else if (this.isValidDestination(this.definition['error']) == false) {
+                issues.push([this.definition['id'], 'Error node points to a non-existent node.', this.definition['name']]);
+            }
+
+            return issues;
         }
 
         cardType() {
             return 'Branching Conditions';
         }
-        
+
         static cardName() {
             return 'Branching Conditions';
         }
 
         static createCard(cardName) {
-        	var id = Node.uuidv4();
-        	
+            var id = Node.uuidv4();
+
             var card = {
-            	"name": cardName,
+                "name": cardName,
                 "actions": [{
-                	"condition": "2 > 3",
-                	"action": id
+                    "condition": "2 > 3",
+                    "action": id
                 }],
                 "no_match": id,
                 "error": id,
                 "type": "branch-conditions",
                 "id": id
-            }; 
-            
+            };
+
             return card;
         }
     }
 
     Node.registerCard('branch-conditions', BranchingConditionsNode);
-    
+
     return BranchingConditionsNode;
 });

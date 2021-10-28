@@ -92,7 +92,7 @@ define(modules, function (mdc) {
 
             if (me.definition["builder_group"] != undefined) {
                 groupField.value = me.definition["builder_group"];
-                
+
                 window.lastCardGroup = me.definition["builder_group"];
             }
 
@@ -153,6 +153,20 @@ define(modules, function (mdc) {
 
         destinationNodes(dialog) {
             return [];
+        }
+
+        issues() {
+            return [];
+        }
+
+        isValidDestination(nodeId) {
+            if (nodeId == null || nodeId == undefined) {
+                return false;
+            } else if (this.dialog.resolveNode(nodeId) == null) {
+                return false;
+            }
+
+            return true;
         }
 
         sourceNodes(dialog) {

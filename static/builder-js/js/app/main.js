@@ -42,16 +42,6 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
 
     topAppBar.setScrollTarget(document.getElementById('main-content'));
 
-    topAppBar.listen('MDCTopAppBar:nav', () => {
-        drawer.open = !drawer.open;
-    });
-
-    function onDialogChanged(changedId) {
-        $("#action_save").show();
-        
-        dialogIsDirty = true;
-    }
-
     function slugify(text){
         return text.toString().toLowerCase()
             .replace(/\s+/g, '-')           // Replace spaces with -
@@ -71,6 +61,14 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
         $("#action_save").show();
 
         dialogIsDirty = true;
+        
+        let issues = selectedDialog.issues();
+
+        if (issues.length > 0) {
+        	$("#action_save").html('warning');
+        } else {
+        	$("#action_save").html('save');
+        }
     }
 
     window.dialogBuilder.loadDialog = function(definition, initialId) {
@@ -86,6 +84,14 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
         selectedDialog.addChangeListener(onDialogChanged);
 
         selectedDialog.selectInitialNode(initialId);
+
+		let issues = selectedDialog.issues();
+		
+        if (issues.length > 0) {
+        	$("#action_save").html('warning');
+        } else {
+        	$("#action_save").html('save');
+        }
     };
 
     window.dialogBuilder.reloadDialog = function() {
@@ -147,7 +153,6 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
             var htmls = groups[groupName];
 
             allCardSelectContent += '      <li class="mdc-list-divider" role="separator"></li>';
-
             allCardSelectContent += '      <li class="mdc-list-item  mdc-list-item--with-one-line prevent-menu-close" role="menuitem" id="all_cards_destination_group_' + i + '" data-category-name="' + groupName + '">';
             allCardSelectContent += '        <span class="mdc-list-item__text mdc-list-item__start"><strong>' + groupName + '</strong></span>';
             allCardSelectContent += '        <span class="mdc-layout-grid--align-right mdc-list-item__end material-icons destination_disclosure_icon">arrow_right</span>';
@@ -231,7 +236,7 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
             if (item["id"] == cardId) {
                 window.dialogBuilder.loadDialog(dialog, item['id']);
 
-                var node = Node.createCard(item, dialog);
+                var node = Node.createCard(item, selectedDialog);
 
                 window.setTimeout(function() {
                     var current = $("#builder_current_node");
@@ -250,6 +255,8 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
         }
     };
 
+    window.dialogBuilder.outstandingIssuesDialog = mdc.dialog.MDCDialog.attachTo(document.getElementById('outstanding-issues-dialog'));
+
     $.getJSON(window.dialogBuilder.source, function(data) {
         window.dialogBuilder.dialog = data;
 
@@ -257,13 +264,76 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
 
         $("#action_save").click(function(eventObj) {
             eventObj.preventDefault();
-            if (window.dialogBuilder.update != undefined) {
-                window.dialogBuilder.update(selectedDialog.name, data, function() {
-                	dialogIsDirty = false;
-                }, function(error) {
-                    console.log(error);
-                });
-            }
+
+	        let issues = selectedDialog.issues();
+	        
+	        if (issues.length == 0) {
+				if (window.dialogBuilder.update != undefined) {
+					window.dialogBuilder.update(selectedDialog.name, data, function() {
+						dialogIsDirty = false;
+					}, function(error) {
+						console.log(error);
+					});
+				}
+			} else {
+				$("#outstanding-issues-items").empty();
+
+				$.each(issues, function(index, issue) {
+		            let itemHtml = '     <li class="mdc-list-item outstanding-issue-item" role="menuitem" id="outstanding-issue-item-' + index + '" data-node-id="' + issue[0] + '" style="height: 48px;">';
+	                itemHtml +=    '       <span class="mdc-list-item__ripple"></span>';
+	                itemHtml +=    '       <span class="mdc-list-item__text">';
+	                itemHtml +=    '         <span class="mdc-list-item__primary-text">' + issue[1] + '</span>';
+	                itemHtml +=    '         <span class="mdc-list-item__secondary-text" style="margin-top: -10px;">' + issue[2] + '</span>';
+	                itemHtml +=    '       </span>';
+                    itemHtml +=    '     </li>';
+                    
+                    $("#outstanding-issues-items").append(itemHtml);
+				});
+
+				let itemHtml = '     <li class="mdc-list-item mdc-list-item--with-one-line outstanding-issue-item" role="menuitem" id="outstanding-issue-item-save" data-node-id="action-save">';
+                itemHtml +=    '       <span class="mdc-list-item__ripple"></span>';
+				itemHtml +=    '       <span class="mdc-list-item__text">';
+				itemHtml +=    '         <span class="mdc-list-item__primary-text">Save with issues</span>';
+				itemHtml +=    '         <span class="mdc-list-item__secondary-text" style="margin-top: -10px;">May exhibit unexpected behavior!</span>';
+				itemHtml +=    '       </span>';
+				itemHtml +=    '       <span class="mdc-list-item__end" style="padding-left: 18px; padding-top: 12px;"><i class="material-icons">save</i></span>';
+				itemHtml +=    '     </li>';
+				
+				$("#outstanding-issues-items").append(itemHtml);
+				
+				$(".outstanding-issue-item").click(function(eventObj) {
+					var clicked = $(eventObj.target);
+					
+					var nodeId = clicked.data('node-id');
+					
+					while (nodeId == undefined) {
+						clicked = clicked.parent()
+
+						nodeId = clicked.data('node-id');
+					}
+					
+					console.log("TARGET: ");
+					console.log(clicked);
+					
+					console.log("SELECTED: " + nodeId);
+					
+					if (nodeId == "action-save") {
+						if (window.dialogBuilder.update != undefined) {
+							window.dialogBuilder.update(selectedDialog.name, data, function() {
+								dialogIsDirty = false;
+							}, function(error) {
+								console.log(error);
+							});
+						}
+					} else {
+	                    window.dialogBuilder.loadNodeById(nodeId);
+					}
+
+					window.dialogBuilder.outstandingIssuesDialog.close();
+				});
+			
+				window.dialogBuilder.outstandingIssuesDialog.open();
+			}
         });
 
         var keys = Object.keys(window.dialogBuilder.cardMapping);

@@ -23,62 +23,62 @@ define(modules, function (mdc, Node) {
                        '    </div>' +
                        '    <label for="' + this.cardId + '_force_top">Clear Pending Interrupts</label>' +
                        '  </div>' +
-			           '</div>';
-			
-			return body;
+                       '</div>';
+            
+            return body;
         }
 
         viewBody() {
-        	if (this.definition['force_top']) {
-				return '<div class="mdc-typography--body1" style="margin: 16px;">Resumes dialog after interruption (clears all interruptions).</div>';
-        	}
-			
-			return '<div class="mdc-typography--body1" style="margin: 16px;">Resumes dialog after interruption (retains interruptions).</div>';
+            if (this.definition['force_top']) {
+                return '<div class="mdc-typography--body1" style="margin: 16px;">Resumes dialog after interruption (clears all interruptions).</div>';
+            }
+            
+            return '<div class="mdc-typography--body1" style="margin: 16px;">Resumes dialog after interruption (retains interruptions).</div>';
         }
 
         initialize() {
-			super.initialize();
-			
-			const me = this;
+            super.initialize();
+            
+            const me = this;
 
-			const forceTop = mdc.checkbox.MDCCheckbox.attachTo(document.getElementById(this.cardId + '_force_top'));
-			forceTop.checked = this.definition['force_top'];
+            const forceTop = mdc.checkbox.MDCCheckbox.attachTo(document.getElementById(this.cardId + '_force_top'));
+            forceTop.checked = this.definition['force_top'];
 
-			$('#' + this.cardId + '_force_top input').on("click", function() {
-				me.definition['force_top'] = forceTop.checked;
-				
-				me.dialog.markChanged(me.id);
-			});
+            $('#' + this.cardId + '_force_top input').on("click", function() {
+                me.definition['force_top'] = forceTop.checked;
+                
+                me.dialog.markChanged(me.id);
+            });
         }
 
         destinationNodes(dialog) {
             return [];
         }
 
-		updateReferences(oldId, newId) {
+        updateReferences(oldId, newId) {
 
-		}
+        }
 
-		cardType() {
-			return 'Resume From Interrupt';
-		}
-		
-		static cardName() {
-			return 'Resume From Interrupt';
-		}
+        cardType() {
+            return 'Resume From Interrupt';
+        }
+        
+        static cardName() {
+            return 'Resume From Interrupt';
+        }
 
-		static createCard(cardName) {
-			var card = {
-				"name": cardName, 
-				"context": "(Context goes here...)", 
-				"type": "interrupt-resume",
-				"force_top": false,
-				"id": Node.uuidv4(),
-				"next_id": null
-			}; 
-			
-			return card;
-		}
+        static createCard(cardName) {
+            var card = {
+                "name": cardName, 
+                "context": "(Context goes here...)", 
+                "type": "interrupt-resume",
+                "force_top": false,
+                "id": Node.uuidv4(),
+                "next_id": null
+            }; 
+            
+            return card;
+        }
     }
 
     Node.registerCard('interrupt-resume', InterruptResumeNode);

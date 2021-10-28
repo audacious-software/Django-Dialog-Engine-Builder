@@ -201,7 +201,7 @@ define(modules, function (mdc, Node) {
         chooseDestinationMenu = function(cardId) {
             var me = this;
             var body = '';
-            
+
             body += '    <div>';
 
             body += '    <ul class="mdc-list mdc-dialog__content dialog_card_selection_menu" role="menu" aria-hidden="true" aria-orientation="vertical" tabindex="-1" style="padding: 0px;">';
@@ -223,13 +223,13 @@ define(modules, function (mdc, Node) {
 
                 itemHtml += '     <li class="mdc-list-item mdc-list-item--with-one-line builder-destination-item" role="menuitem" data-sort-name="' + item["name"] + '" id="' + cardId + '_destination_item_' + item['id'] + '" data-node-id="' + item['id'] + '" data-category="' + groupName + '">';
                 itemHtml += '       <span class="mdc-list-item__ripple"></span>';
-                
+
                 var sortName = item["id"];
 
                 if (item["name"] != undefined) {
                     itemHtml += '       <span class="mdc-list-item__text mdc-list-item__start">' + item["name"] + ' </span>';
 
-	                sortName = item["name"];
+                    sortName = item["name"];
                 } else {
                     itemHtml += '       <span class="mdc-list-item__text mdc-list-item__start">' + item["id"] + '</span>';
                 }
@@ -247,8 +247,8 @@ define(modules, function (mdc, Node) {
                 }
 
                 groupHtmls.push({
-                	'sort': sortName,
-                	'html': itemHtml
+                    'sort': sortName,
+                    'html': itemHtml
                 });
             }
 
@@ -264,14 +264,14 @@ define(modules, function (mdc, Node) {
                 body += '      </li>';
 
                 var htmls = groups[groupName];
-                
+
                 htmls.sort(function(a, b) {
-                	if (a['sort'] == b['sort']) {
-                		return 0;
-                	}
-                	
-                	return (a['sort'] > b['sort'] ? 1 : -1);
-				});
+                    if (a['sort'] == b['sort']) {
+                        return 0;
+                    }
+
+                    return (a['sort'] > b['sort'] ? 1 : -1);
+                });
 
                 for (var j = 0; j < htmls.length; j++) {
                     body += htmls[j]['html'];
@@ -342,7 +342,7 @@ define(modules, function (mdc, Node) {
                 $(".builder-destination-item").hide();
             }, 500);
         }
-        
+
         addCard(callback) {
             $("#add-card-name-value").val("");
 
@@ -360,16 +360,10 @@ define(modules, function (mdc, Node) {
                         var cardClass = window.dialogBuilder.cardMapping[cardType];
 
                         var cardDef = cardClass.createCard(cardName);
-                        
-                        console.log("LAST: ");
-						console.log(window.lastCardGroup);
 
-						console.log("CARD: ");
-						console.log(cardDef['builder_group']);
-
-		                if (window.lastCardGroup != undefined && window.lastCardGroup != '') {
-        		        	cardDef['builder_group'] = window.lastCardGroup;
-                		}
+                        if (window.lastCardGroup != undefined && window.lastCardGroup != '') {
+                            cardDef['builder_group'] = window.lastCardGroup;
+                        }
 
                         if (me.definition.includes(cardDef) == false) {
                             me.definition.push(cardDef);
@@ -428,6 +422,22 @@ define(modules, function (mdc, Node) {
             }
 
             return null;
+        }
+
+        issues() {
+            var issues = []
+
+            for (var i = 0; i < this.definition.length; i++) {
+                var item = this.definition[i];
+                
+                let card = Node.createCard(item, this);
+                
+                let cardIssues = card.issues();
+
+                issues = issues.concat(cardIssues)
+            }
+
+            return issues;
         }
 
         loadDialog(definition) {

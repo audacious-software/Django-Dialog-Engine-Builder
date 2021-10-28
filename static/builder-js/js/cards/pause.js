@@ -146,6 +146,20 @@ define(modules, function (mdc, Node) {
             }
         }
 
+        issues() {
+            var issues = super.issues();
+
+            if (this.definition['next_id'] == undefined) {
+                issues.push([this.definition['id'], 'Next node does not point to another node.'], this.definition['name']);
+            } else {
+                if (this.isValidDestination(this.definition['next_id']) == false) {
+                    issues.push([this.definition['id'], 'Next node points to a non-existent node.'], this.definition['name']);
+                }
+            }
+            
+            return issues;
+        }
+
         cardType() {
             return 'Pause';
         }
