@@ -14,6 +14,7 @@ define(modules, function (mdc, Node) {
             this.definition = definition;
             this.name = name;
             this.changeListeners = [];
+            this.lastLoadedNode = null;
         }
 
         allActions() {
@@ -55,7 +56,9 @@ define(modules, function (mdc, Node) {
                 for (var i = 0; loaded == false && i < this.definition.length; i++) {
                     var item = this.definition[i];
 
-                    if (nodeId == item["id"] || nodeId.endsWith("#" + item["id"])) {
+                    if ((nodeId == item["id"] || nodeId.endsWith("#" + item["id"])) && this.lastLoadedNode != item["id"]) {
+                    	this.lastLoadedNode = item["id"];
+                    	
                         this.loadNode(item);
 
                         loaded = true;

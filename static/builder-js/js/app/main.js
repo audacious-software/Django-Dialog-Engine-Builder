@@ -81,9 +81,9 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
 
         $(".mdc-top-app-bar__title").html(selectedDialog.getName());
 
-        selectedDialog.addChangeListener(onDialogChanged);
-
         selectedDialog.selectInitialNode(initialId);
+
+        selectedDialog.addChangeListener(onDialogChanged);
 
 		let issues = selectedDialog.issues();
 		
@@ -236,6 +236,7 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
             if (item["id"] == cardId) {
                 window.dialogBuilder.loadDialog(dialog, item['id']);
 
+/*
                 var node = Node.createCard(item, selectedDialog);
 
                 window.setTimeout(function() {
@@ -249,7 +250,7 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
                     
                     window.lastCardGroup = item['builder_group'];
                 },  100);
-
+*/
                 return;
             }
         }
@@ -296,7 +297,7 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
 				itemHtml +=    '         <span class="mdc-list-item__primary-text">Save with issues</span>';
 				itemHtml +=    '         <span class="mdc-list-item__secondary-text" style="margin-top: -10px;">May exhibit unexpected behavior!</span>';
 				itemHtml +=    '       </span>';
-				itemHtml +=    '       <span class="mdc-list-item__end" style="padding-left: 18px; padding-top: 12px;"><i class="material-icons">save</i></span>';
+				itemHtml +=    '       <span class="mdc-list-item__end" style="margin-left: auto; padding-top: 12px;"><i class="material-icons">save</i></span>';
 				itemHtml +=    '     </li>';
 				
 				$("#outstanding-issues-items").append(itemHtml);
@@ -311,12 +312,7 @@ requirejs(["material", "app/dialog", "cookie", "cards/node", "jquery"], function
 
 						nodeId = clicked.data('node-id');
 					}
-					
-					console.log("TARGET: ");
-					console.log(clicked);
-					
-					console.log("SELECTED: " + nodeId);
-					
+				
 					if (nodeId == "action-save") {
 						if (window.dialogBuilder.update != undefined) {
 							window.dialogBuilder.update(selectedDialog.name, data, function() {
