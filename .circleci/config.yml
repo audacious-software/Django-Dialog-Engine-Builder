@@ -30,8 +30,8 @@ jobs:
       - run:
           name: Validate Javascript code
           command: |
-            npm install eslint
-            eslint static/builder-js/**
+            npm install
+            npx eslint static/builder-js/js/
       - run:
           name: Build and validate Python code
           command: |
