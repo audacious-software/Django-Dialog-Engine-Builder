@@ -81,6 +81,11 @@ jobs:
       - restore_cache:
           key: venv-27-{{ .Branch }}-{{ checksum "requirements.txt" }}-dep
       - run:
+          name: Validate Javascript code
+          command: |
+            npm install
+            npx eslint static/builder-js/js/
+      - run:
           name: Build and validate Python code
           command: |
             sudo apt-get update && sudo apt-get install -y gdal-bin
