@@ -48,6 +48,12 @@ define(modules, function (mdc, Node) {
             return '<div class="mdc-typography--body1" style="margin: 16px;"><em>Marks the start of the interactive dialog.</em></div>';
         }
 
+        fetchMenuItems() {
+            let items = [];
+
+            return items;
+        }
+
         initialize() {
             super.initialize();
 

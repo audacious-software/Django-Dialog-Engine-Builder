@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   python: circleci/python@1.2
+  eslint: arrai/eslint@3.0.0
 
 workflows:
   build:
@@ -26,7 +27,7 @@ jobs:
       - restore_cache:
           key: venv-38-{{ .Branch }}-{{ checksum "requirements.txt" }}-dep
       - run:
-          name: Build and validate
+          name: Build and validate Python code
           command: |
             sudo apt-get update && sudo apt-get install -y gdal-bin
             python3 -m venv --copies /home/circleci/venv
@@ -47,7 +48,9 @@ jobs:
             cp django_dialog_engine_builder/.pylintrc .
             pylint django_dialog_engine
             pylint django_dialog_engine_builder
-            bandit -r .      
+            bandit -r .
+      - eslint:
+          files: django/django_dialog_engine_builder/static/builder-js
       - save_cache:
           key: venv-38-{{ .Branch }}-{{ checksum "/home/circleci/django/dde/django_dialog_engine_builder/requirements.txt" }}-dep
           paths:
@@ -74,7 +77,7 @@ jobs:
       - restore_cache:
           key: venv-27-{{ .Branch }}-{{ checksum "requirements.txt" }}-dep
       - run:
-          name: Build and validate
+          name: Build and validate Python code
           command: |
             sudo apt-get update && sudo apt-get install -y gdal-bin
             virtualenv --copies /home/circleci/venv
@@ -95,7 +98,7 @@ jobs:
             cp django_dialog_engine_builder/.pylintrc .
             pylint django_dialog_engine
             pylint django_dialog_engine_builder
-            bandit -r .      
+            bandit -r .
       - save_cache:
           key: venv-27-{{ .Branch }}-{{ checksum "/home/circleci/django/dde/django_dialog_engine_builder/requirements.txt" }}-dep
           paths:

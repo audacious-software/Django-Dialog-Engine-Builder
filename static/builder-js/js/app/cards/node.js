@@ -28,17 +28,27 @@ define(modules, function (mdc) {
                 htmlString += '      <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">';
                 htmlString += '        <div class="mdc-typography--headline6" style="margin-bottom: 16px;">';
                 htmlString += '          ' + this.cardType();
-                htmlString += '          <span class="mdc-menu-surface--anchor" style="float: right;">';
-                htmlString += '            <i class="material-icons mdc-icon-button__icon" aria-hidden="true" id="' + this.cardId + '_menu_open">more_vert</i>';
-                htmlString += '            <div class="mdc-menu mdc-menu-surface" id="' + this.cardId + '_menu">';
-                htmlString += '              <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical" tabindex="-1">';
-                htmlString += '                <li class="mdc-list-item mdc-list-item mdc-list-item--with-one-line" role="menuitem">';
-                htmlString += '                  <span class="mdc-list-item__ripple"></span>';
-                htmlString += '                  <span class="mdc-list-item__text mdc-list-item__start">Delete&#8230;</span>';
-                htmlString += '                </li>';
-                htmlString += '              </ul>';
-                htmlString += '            </div>';
-                htmlString += '          </span>';
+
+				const menuItems = this.fetchMenuItems();
+				
+				if (menuItems.length > 0) {
+					htmlString += '          <span class="mdc-menu-surface--anchor" style="float: right;">';
+					htmlString += '            <i class="material-icons mdc-icon-button__icon" aria-hidden="true" id="' + this.cardId + '_menu_open">more_vert</i>';
+					htmlString += '            <div class="mdc-menu mdc-menu-surface" id="' + this.cardId + '_menu">';
+					htmlString += '              <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical" tabindex="-1">';
+
+					$.each(menuItems, function(index, item) {
+						htmlString += '                <li class="mdc-list-item mdc-list-item mdc-list-item--with-one-line" role="menuitem" data-action="' + item['action'] + '">';
+						htmlString += '                  <span class="mdc-list-item__ripple"></span>';
+						htmlString += '                  <span class="mdc-list-item__text mdc-list-item__start">' + item['label'] + '</span>';
+						htmlString += '                </li>';
+					});
+
+					htmlString += '              </ul>';
+					htmlString += '            </div>';
+					htmlString += '          </span>';
+				}
+				
                 htmlString += '        </div>';
                 htmlString += '      </div>';
                 htmlString += '      <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">';
@@ -74,6 +84,17 @@ define(modules, function (mdc) {
             return htmlString;
         }
 
+        fetchMenuItems() {
+            let items = [];
+
+            items.push({
+                'action': 'delete',
+                'label': 'Delete&#8230;'
+            });
+
+            return items;
+        }
+
         initialize() {
             const me = this;
 
@@ -104,20 +125,34 @@ define(modules, function (mdc) {
                 me.dialog.markChanged(me.id);
             });
 
-            const menu = mdc.menu.MDCMenu.attachTo(document.getElementById(this.cardId + '_menu'));
-            menu.setFixedPosition(true);
+			if ($('#' + this.cardId + '_menu').length > 0) {
+				const menu = mdc.menu.MDCMenu.attachTo(document.getElementById(this.cardId + '_menu'));
+				menu.setFixedPosition(true);
 
-            menu.listen("MDCMenu:selected", function (event) {
-                console.log(event.detail);
+				menu.listen("MDCMenu:selected", function (event) {
+					const action = $(event.detail.item).attr('data-action');
 
-                me.dialog.deleteCard(me.id);
-            })
+					if (me.processMenuAction(action) == false) {
+		        		console.log('Unknown card menu action: "' + action + '".');
+		        	}
+				})
 
-            $("#" + this.cardId + "_menu_open").click(function(eventObj) {
-                eventObj.preventDefault();
+				$("#" + this.cardId + "_menu_open").click(function(eventObj) {
+					eventObj.preventDefault();
 
-                menu.open = (menu.open == false);
-            });
+					menu.open = (menu.open == false);
+				});
+			}
+        }
+        
+        processMenuAction(actionName) {
+        	if (actionName == 'delete') {
+				this.dialog.deleteCard(this.id);
+				
+				return true;
+        	}
+        	
+        	return false;
         }
 
         updateReferences(oldId, newId) {
