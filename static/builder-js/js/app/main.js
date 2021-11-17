@@ -22,7 +22,7 @@ requirejs.config({
 })
 
 requirejs(['material', 'app/dialog', 'cookie', 'cards/node', 'jquery'], function (mdc, dialog, Cookies, Node) {
-  const csrftoken = $('[name=csrfmiddlewaretoken]').val(); // Testing ESLint CI job
+  const csrftoken = $('[name=csrfmiddlewaretoken]').val()
 
   function csrfSafeMethod (method) {
     // these HTTP methods do not require CSRF protection
