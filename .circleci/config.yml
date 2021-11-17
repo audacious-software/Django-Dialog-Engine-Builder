@@ -31,11 +31,7 @@ jobs:
           name: Validate Javascript code
           command: |
             npm install eslint
-            npx eslint --init
-            ls
-            npx eslint static/builder-js
-      - eslint:
-          files: static/builder-js
+            eslint static/builder-js/**
       - run:
           name: Build and validate Python code
           command: |
