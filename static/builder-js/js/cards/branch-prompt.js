@@ -310,13 +310,13 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
           patternField.value = pattern.replace('(?!', '').replace(')', '')
         } else if (pattern.startsWith('^') && pattern.endsWith('$')) {
           operationField.value = 'equals'
-          patternField.value = pattern.replace('^', '').replace('$', '')
+          patternField.value = pattern.replace(/^\^/, '').replace(/\$$/, '')
         } else if (pattern.startsWith('^') && pattern.endsWith('.*')) {
           operationField.value = 'begins_with'
-          patternField.value = pattern.replace('^', '').replace('.*', '')
+          patternField.value = pattern.replace(/^\^/, '').replace(/\.\*/g, '')
         } else if (pattern.startsWith('.*') && pattern.endsWith('$')) {
           operationField.value = 'ends_with'
-          patternField.value = pattern.replace('$', '').replace('.*', '')
+          patternField.value = pattern.replace(/\$$/, '').replace(/\.\*/g, '')
         } else {
           operationField.value = 'contains'
           patternField.value = pattern
