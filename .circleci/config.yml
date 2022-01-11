@@ -47,6 +47,7 @@ jobs:
             mv ../django_dialog_engine_builder dde
             cd dde
             git clone https://github.com/audacious-software/Django-Dialog-Engine.git django_dialog_engine
+            pip install -r django_dialog_engine/requirements.txt --progress-bar off
             cp django_dialog_engine_builder/circle_settings.py dde/settings.py
             cp django_dialog_engine_builder/circle_urls.py dde/urls.py
             python manage.py migrate
@@ -101,6 +102,7 @@ jobs:
             mv ../django_dialog_engine_builder dde
             cd dde
             git clone https://github.com/audacious-software/Django-Dialog-Engine.git django_dialog_engine
+            pip install -r django_dialog_engine/requirements.txt --progress-bar off
             cp django_dialog_engine_builder/circle_settings.py dde/settings.py
             cp django_dialog_engine_builder/circle_urls.py dde/urls.py
             python manage.py migrate
