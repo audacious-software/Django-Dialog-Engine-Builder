@@ -87,6 +87,11 @@ define(['material', 'jquery'], function (mdc) {
       const items = []
 
       items.push({
+        action: 'change-type',
+        label: 'Change Type&#8230;'
+      })
+
+      items.push({
         action: 'delete',
         label: 'Delete&#8230;'
       })
@@ -147,6 +152,34 @@ define(['material', 'jquery'], function (mdc) {
     processMenuAction (actionName) {
       if (actionName === 'delete') {
         this.dialog.deleteCard(this.id)
+
+        return true
+      } else if (actionName === 'change-type') {
+        const cardId = this.id
+        const dialog = this.dialog
+
+        dialog.changeCardType(this.id, this.definition.type, function (cardType) {
+          console.log('SELECTED: ' + cardType + ' FOR ' + cardId)
+
+          $.each(dialog.definition, function (index, node) {
+            if (node.id === cardId) {
+              node.type = cardType
+
+              const cardClass = window.dialogBuilder.cardMapping[cardType]
+              const cardDef = cardClass.createCard('Template Card')
+
+              for (const property in cardDef) {
+                if (node[property] === undefined) {
+                  node[property] = cardDef[property]
+                }
+              }
+
+              dialog.loadNode(node)
+            }
+          })
+
+          window.dialogBuilder.reloadDialog()
+        })
 
         return true
       }

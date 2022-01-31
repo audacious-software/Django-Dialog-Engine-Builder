@@ -342,6 +342,22 @@ requirejs(['material', 'app/dialog', 'cookie', 'cards/node', 'jquery'], function
         radio += '</div>'
 
         $('#add_card_radio_options').append(radio)
+
+        let changeTypeRadio = ''
+
+        changeTypeRadio += '<div class="mdc-form-field mdc-layout-grid__cell--span-6">'
+        changeTypeRadio += '  <div class="mdc-radio">'
+        changeTypeRadio += '    <input class="mdc-radio__native-control" type="radio" value="' + key + '" name="change_card_type_radio" checked />'
+        changeTypeRadio += '    <div class="mdc-radio__background">'
+        changeTypeRadio += '      <div class="mdc-radio__outer-circle"></div>'
+        changeTypeRadio += '      <div class="mdc-radio__inner-circle"></div>'
+        changeTypeRadio += '    </div>'
+        changeTypeRadio += '    <div class="mdc-radio__ripple"></div>'
+        changeTypeRadio += '  </div>'
+        changeTypeRadio += '  <label for="radio-1">' + name + '</label>'
+        changeTypeRadio += '</div>'
+
+        $('#change_card_type_options').append(changeTypeRadio)
       }
     }
 
@@ -367,6 +383,7 @@ requirejs(['material', 'app/dialog', 'cookie', 'cards/node', 'jquery'], function
     })
 
     window.dialogBuilder.addCardDialog = mdc.dialog.MDCDialog.attachTo(document.getElementById('add-card-dialog'))
+    window.dialogBuilder.changeCardTypeDialog = mdc.dialog.MDCDialog.attachTo(document.getElementById('change-card-type-dialog'))
     mdc.textField.MDCTextField.attachTo(document.getElementById('add-card-name'))
 
     // window.dialogBuilder.newCardSelect = mdc.select.MDCSelect.attachTo(document.getElementById('add-card-type'));

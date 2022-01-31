@@ -382,6 +382,30 @@ define(modules, function (mdc, Node) {
       window.dialogBuilder.addCardDialog.open()
     }
 
+    changeCardType (cardId, oldType, callback) {
+      $('input[name=change_card_type_radio]').prop('checked', false)
+
+      $('input[name=change_card_type_radio][value=' + oldType + ']').prop('checked', true)
+
+      const listener = {
+        handleEvent: function (event) {
+          if (event.detail.action === 'change_card_type') {
+            const cardType = $('input[name=change_card_type_radio]:checked').val()
+
+            if (callback !== undefined) {
+              callback(cardType)
+            }
+
+            window.dialogBuilder.changeCardTypeDialog.unlisten('MDCDialog:closed', this)
+          }
+        }
+      }
+
+      window.dialogBuilder.changeCardTypeDialog.listen('MDCDialog:closed', listener)
+
+      window.dialogBuilder.changeCardTypeDialog.open()
+    }
+
     deleteCard (cardId) {
       if (window.confirm('Are you sure you want to delete this card?')) {
         const indices = []
