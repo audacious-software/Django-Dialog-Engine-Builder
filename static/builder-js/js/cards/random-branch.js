@@ -3,6 +3,21 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
     editBody () {
       let body = ''
 
+      body += '<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 mdc-form-field">'
+      body += '  <div class="mdc-checkbox">'
+      body += '    <input type="checkbox" class="mdc-checkbox__native-control" id="' + this.cardId + '_without_replacement"/>'
+      body += '    <div class="mdc-checkbox__background">'
+      body += '      <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">'
+      body += '        <path class="mdc-checkbox__checkmark-path" fill="none" d="M1.73,12.91 8.1,19.28 22.79,4.59"/>'
+      body += '      </svg>'
+      body += '      <div class="mdc-checkbox__mixedmark"></div>'
+      body += '    </div>'
+      body += '    <div class="mdc-checkbox__ripple"></div>'
+      body += '    <div class="mdc-checkbox__focus-ring"></div>'
+      body += '  </div>'
+      body += '  <label for="checkbox-1">Sampling Without Replacement</label>'
+      body += '</div>'
+
       for (let i = 0; i < this.definition.actions.length; i++) {
         body += '<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12" style="border-top: thin solid #AAABAA; padding-top: 20px;"></div>'
 
@@ -81,6 +96,18 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
 
         me.dialog.markChanged(me.id)
         me.dialog.loadNode(me.definition)
+      })
+
+      if (me.definition.without_replacement) {
+        $('#' + this.cardId + '_without_replacement').prop('checked', true)
+      } else {
+        $('#' + this.cardId + '_without_replacement').prop('checked', false)
+      }
+
+      $('#' + this.cardId + '_without_replacement').on('change', function () {
+        me.definition.without_replacement = $(this).prop('checked')
+
+        me.dialog.markChanged(me.id)
       })
 
       for (let i = 0; i < this.definition.actions.length; i++) {
