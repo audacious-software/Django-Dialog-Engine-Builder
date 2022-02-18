@@ -58,6 +58,18 @@ def builder_dialog_definition_json(request, dialog): # pylint: disable=unused-ar
 
     return HttpResponse(json.dumps(dialog_script.definition, indent=2), content_type='application/json', status=200)
 
+@staff_member_required
+def builder_embeddable_dialogs_json(request): # pylint: disable=unused-argument
+    dialogs_json = []
+
+    for script in DialogScript.objects.filter(embeddable=True).exclude(identifier=None):
+        dialogs_json.append({
+            'id': script.identifier,
+            'name': script.name
+        })
+
+    return HttpResponse(json.dumps(dialogs_json, indent=2), content_type='application/json', status=200)
+
 def builder_interaction_card(request, card): # pylint: disable=unused-argument
     card = get_object_or_404(InteractionCard, identifier=card)
 
