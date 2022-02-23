@@ -331,14 +331,14 @@ requirejs(['material', 'app/dialog', 'cookie', 'cards/node', 'jquery'], function
 
         radio += '<div class="mdc-form-field mdc-layout-grid__cell--span-6">'
         radio += '  <div class="mdc-radio">'
-        radio += '    <input class="mdc-radio__native-control" type="radio" value="' + key + '" name="add_card_radio" checked />'
+        radio += '    <input class="mdc-radio__native-control" type="radio" value="' + key + '" name="add_card_radio" id="add_card_radio_' + key + '" data-name="' + name + '" />'
         radio += '    <div class="mdc-radio__background">'
         radio += '      <div class="mdc-radio__outer-circle"></div>'
         radio += '      <div class="mdc-radio__inner-circle"></div>'
         radio += '    </div>'
         radio += '    <div class="mdc-radio__ripple"></div>'
         radio += '  </div>'
-        radio += '  <label for="radio-1">' + name + '</label>'
+        radio += '  <label for="add_card_radio_' + key + '">' + name + '</label>'
         radio += '</div>'
 
         $('#add_card_radio_options').append(radio)
@@ -384,7 +384,7 @@ requirejs(['material', 'app/dialog', 'cookie', 'cards/node', 'jquery'], function
 
     window.dialogBuilder.addCardDialog = mdc.dialog.MDCDialog.attachTo(document.getElementById('add-card-dialog'))
     window.dialogBuilder.changeCardTypeDialog = mdc.dialog.MDCDialog.attachTo(document.getElementById('change-card-type-dialog'))
-    mdc.textField.MDCTextField.attachTo(document.getElementById('add-card-name'))
+    const addCardName = mdc.textField.MDCTextField.attachTo(document.getElementById('add-card-name'))
 
     // window.dialogBuilder.newCardSelect = mdc.select.MDCSelect.attachTo(document.getElementById('add-card-type'));
 
@@ -481,6 +481,12 @@ requirejs(['material', 'app/dialog', 'cookie', 'cards/node', 'jquery'], function
       window.setTimeout(function () {
         $('#preview-dialog-canvas').attr('src', window.dialogBuilder.visualization)
       }, 100)
+    })
+
+    $('input[type="radio"][name="add_card_radio"]').on('change', function () {
+      if (addCardName.value === undefined || addCardName.value.trim() === '' || (addCardName.value.startsWith('New ') && addCardName.value.endsWith(' Card'))) {
+        addCardName.value = 'New ' + $('input[type="radio"][name="add_card_radio"]:checked').attr('data-name') + ' Card'
+      }
     })
   })
 
