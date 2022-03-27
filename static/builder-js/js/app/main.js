@@ -217,21 +217,6 @@ requirejs(['material', 'app/dialog', 'cookie', 'cards/node', 'jquery'], function
       if (item.id === cardId) {
         window.dialogBuilder.loadDialog(dialog, item.id)
 
-        /*
-                var node = Node.createCard(item, selectedDialog);
-
-                window.setTimeout(function() {
-                    var current = $("#builder_current_node");
-
-                    var html = node.editHtml();
-
-                    current.html(html);
-
-                    node.initialize();
-
-                    window.lastCardGroup = item['builder_group'];
-                },  100);
-*/
         return
       }
     }
@@ -251,7 +236,14 @@ requirejs(['material', 'app/dialog', 'cookie', 'cards/node', 'jquery'], function
 
       if (issues.length === 0) {
         if (window.dialogBuilder.update !== undefined) {
+          $('#action_save').html('pending')
           window.dialogBuilder.update(selectedDialog.name, data, function () {
+            $('#action_save').html('done')
+
+            window.setTimeout(function () {
+              $('#action_save').html('save')
+            }, 1000)
+
             dialogIsDirty = false
           }, function (error) {
             console.log(error)
@@ -296,7 +288,14 @@ requirejs(['material', 'app/dialog', 'cookie', 'cards/node', 'jquery'], function
 
           if (nodeId === 'action-save') {
             if (window.dialogBuilder.update !== undefined) {
+              $('#action_save').html('pending')
               window.dialogBuilder.update(selectedDialog.name, data, function () {
+                $('#action_save').html('done')
+
+                window.setTimeout(function () {
+                  $('#action_save').html('save')
+                }, 1000)
+
                 dialogIsDirty = false
               }, function (error) {
                 console.log(error)
