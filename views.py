@@ -27,7 +27,7 @@ def builder_dialog(request, dialog): # pylint: disable=unused-argument
     card_modules = []
     card_types = []
 
-    for card in InteractionCard.objects.filter(enabled=True):
+    for card in InteractionCard.objects.filter(enabled=True).order_by('name'):
         card_modules.append(reverse('builder_interaction_card', args=[card.identifier]))
         card_types.append(card.identifier)
 

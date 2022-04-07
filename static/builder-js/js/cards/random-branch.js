@@ -23,7 +23,7 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
 
         body += '<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-7">'
         body += '  <div class="mdc-text-field mdc-text-field--outlined" id="' + this.cardId + '_weight_value_' + i + '"  style="width: 100%">'
-        body += '    <input type="text" class="mdc-text-field__input" id="' + this.cardId + '_weight_value_' + i + '_value" style="width: 100%">'
+        body += '    <input type="number" min="0" class="mdc-text-field__input" id="' + this.cardId + '_weight_value_' + i + '_value" style="width: 100%">'
         body += '    <div class="mdc-notched-outline">'
         body += '      <div class="mdc-notched-outline__leading"></div>'
         body += '      <div class="mdc-notched-outline__notch">'
@@ -117,15 +117,23 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
         const weightField = mdc.textField.MDCTextField.attachTo(document.getElementById(identifier))
 
         const choiceIndex = i
+        let lastValue = 'delete-me'
 
         weightField.value = '' + action.weight
 
-        $('#' + identifier).on('change keyup paste', function () {
+        $('#' + identifier).on('change keyup paste', function (event) {
           const value = $('#' + identifier + '_value').val()
 
           me.definition.actions[choiceIndex].weight = value
-
           me.dialog.markChanged(me.id)
+          
+          if (lastValue === '' && (event.keyCode == 46 || event.keyCode == 8)) {
+			  me.definition.actions.splice(choiceIndex, 1)
+			  me.dialog.loadNode(me.definition)
+			  me.dialog.markChanged(me.id)
+          }
+
+          lastValue = value
         })
 
         $('#' + this.cardId + '_next_edit_' + i).on('click', function () {

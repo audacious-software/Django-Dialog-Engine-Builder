@@ -25,6 +25,7 @@ CARDS = (
     ('Interrupt Resume', 'interrupt-resume',),
     ('Time-Elapsed Interrupt', 'time-elapsed-interrupt',),
     ('Embedded Dialog', 'embed-dialog',),
+    ('Record Variable', 'record-variable',),
 )
 
 class Command(BaseCommand):

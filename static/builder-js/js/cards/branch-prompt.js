@@ -333,20 +333,24 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
         const operationSelect = mdc.select.MDCSelect.attachTo(document.getElementById(operationId))
 
         const patternIndex = i
+        let lastValue = 'delete-me'
 
         updateViews(action.pattern, operationSelect, patternField)
 
         $('#' + identifier).on('change keyup paste', function () {
           const value = $('#' + identifier + '_value').val()
 
-          if (me.definition.actions[patternIndex].pattern === '' && value === '') {
-            me.definition.actions.splice(patternIndex, 1)
-            me.dialog.loadNode(me.definition)
+          if (lastValue === '' && (event.keyCode == 46 || event.keyCode == 8)) {
+			  me.definition.actions.splice(patternIndex, 1)
+			  me.dialog.loadNode(me.definition)
+			  me.dialog.markChanged(me.id)
           } else {
             window.setTimeout(function () {
               updatePattern(me.definition.actions[patternIndex], operationSelect.value, patternField.value)
-            }, 250)
+            }, 100)
           }
+
+          lastValue = value
         })
 
         operationSelect.listen('MDCSelect:change', () => {

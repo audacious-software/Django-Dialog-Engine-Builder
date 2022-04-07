@@ -154,6 +154,7 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
 
       for (let i = 0; i < this.definition.actions.length; i++) {
         const conditionIndex = i
+        let lastValue = 'delete-me'
 
         const action = this.definition.actions[i]
 
@@ -167,16 +168,17 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
         $('#' + identifier + '_value').on('change keyup', function () {
           const value = $('#' + identifier + '_value').val()
 
-          console.log('VALUE[' + conditionIndex + '] => ' + value + ' // ' + identifier)
+          me.dialog.markChanged(me.id)
 
-          if (me.definition.actions[conditionIndex].condition === '' && value === '') {
-            me.definition.actions.splice(conditionIndex, 1)
-            me.dialog.loadNode(me.definition)
+          if (lastValue === '' && (event.keyCode == 46 || event.keyCode == 8)) {
+			  me.definition.actions.splice(conditionIndex, 1)
+			  me.dialog.loadNode(me.definition)
+			  me.dialog.markChanged(me.id)
           } else {
             me.definition.actions[conditionIndex].condition = value
           }
 
-          me.dialog.markChanged(me.id)
+          lastValue = value
         })
 
         $('#' + identifier + '_value').on('paste', function () {
