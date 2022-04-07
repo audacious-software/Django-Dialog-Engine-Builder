@@ -126,11 +126,11 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
 
           me.definition.actions[choiceIndex].weight = value
           me.dialog.markChanged(me.id)
-          
-          if (lastValue === '' && (event.keyCode == 46 || event.keyCode == 8)) {
-			  me.definition.actions.splice(choiceIndex, 1)
-			  me.dialog.loadNode(me.definition)
-			  me.dialog.markChanged(me.id)
+
+          if (lastValue === '' && (event.keyCode === 46 || event.keyCode === 8)) {
+            me.definition.actions.splice(choiceIndex, 1)
+            me.dialog.loadNode(me.definition)
+            me.dialog.markChanged(me.id)
           }
 
           lastValue = value

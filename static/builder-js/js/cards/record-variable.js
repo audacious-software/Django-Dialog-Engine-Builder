@@ -47,7 +47,7 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
       body += '      <div class="mdc-dialog__content" id="' + this.cardId + '-dialog-content"  style="padding: 0px;">'
 
       body += this.dialog.chooseDestinationMenu(this.cardId)
-      
+
       body += '      </div>'
       body += '    </div>'
       body += '  </div>'
@@ -67,11 +67,11 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
       const me = this
 
       const valueField = mdc.textField.MDCTextField.attachTo(document.getElementById(this.cardId + '_value_field'))
-      
+
       if (this.definition.value !== undefined) {
-	      valueField.value = this.definition.value
-	  }
-      
+        valueField.value = this.definition.value
+      }
+
       $('#' + this.cardId + '_value_value').on('change keyup paste', function () {
         const value = $('#' + me.cardId + '_value_value').val()
 
@@ -83,8 +83,8 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
       const keyField = mdc.textField.MDCTextField.attachTo(document.getElementById(this.cardId + '_key_field'))
 
       if (this.definition.key !== undefined) {
-	      keyField.value = this.definition.key
-	  }
+        keyField.value = this.definition.key
+      }
 
       $('#' + this.cardId + '_key_value').on('change keyup paste', function () {
         const value = $('#' + me.cardId + '_key_value').val()

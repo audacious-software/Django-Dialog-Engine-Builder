@@ -337,13 +337,13 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
 
         updateViews(action.pattern, operationSelect, patternField)
 
-        $('#' + identifier).on('change keyup paste', function () {
+        $('#' + identifier).on('change keyup paste', function (event) {
           const value = $('#' + identifier + '_value').val()
 
-          if (lastValue === '' && (event.keyCode == 46 || event.keyCode == 8)) {
-			  me.definition.actions.splice(patternIndex, 1)
-			  me.dialog.loadNode(me.definition)
-			  me.dialog.markChanged(me.id)
+          if (lastValue === '' && (event.keyCode === 46 || event.keyCode === 8)) {
+            me.definition.actions.splice(patternIndex, 1)
+            me.dialog.loadNode(me.definition)
+            me.dialog.markChanged(me.id)
           } else {
             window.setTimeout(function () {
               updatePattern(me.definition.actions[patternIndex], operationSelect.value, patternField.value)

@@ -165,15 +165,15 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
           conditionField.value = me.definition.actions[conditionIndex].condition
         }
 
-        $('#' + identifier + '_value').on('change keyup', function () {
+        $('#' + identifier + '_value').on('change keyup', function (event) {
           const value = $('#' + identifier + '_value').val()
 
           me.dialog.markChanged(me.id)
 
-          if (lastValue === '' && (event.keyCode == 46 || event.keyCode == 8)) {
-			  me.definition.actions.splice(conditionIndex, 1)
-			  me.dialog.loadNode(me.definition)
-			  me.dialog.markChanged(me.id)
+          if (lastValue === '' && (event.keyCode === 46 || event.keyCode === 8)) {
+            me.definition.actions.splice(conditionIndex, 1)
+            me.dialog.loadNode(me.definition)
+            me.dialog.markChanged(me.id)
           } else {
             me.definition.actions[conditionIndex].condition = value
           }
