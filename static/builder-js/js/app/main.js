@@ -105,15 +105,31 @@ requirejs(['material', 'app/dialog', 'cookie', 'cards/node', 'jquery'], function
         groupName = '<em>Ungrouped Cards</em>'
       }
 
-      itemHtml += '     <li class="mdc-list-item mdc-list-item--with-one-line builder-destination-item" role="menuitem" id="all_cards_destination_item_' + item.id + '" data-node-id="' + item.id + '" data-category="' + groupName + '">'
+      itemHtml += '     <li class="mdc-list-item builder-destination-item" role="menuitem" id="all_cards_destination_item_' + item.id + '" data-node-id="' + item.id + '" data-category="' + groupName + '">'
 
       let sortName = item.id
 
+      let cardType = item.type
+
+      const cardClass = window.dialogBuilder.cardMapping[cardType]
+
+      if (cardClass !== undefined) {
+        cardType = cardClass.cardName()
+      }
+
       if (item.name !== undefined) {
-        itemHtml += '       <span class="mdc-list-item__text mdc-list-item__start">' + item.name + '</span>'
+        itemHtml += '          <div class="mdc-list-item__text" style="padding-bottom: 16px;">'
+        itemHtml += '             <span class="mdc-list-item__primary-text">' + item.name + '</span>'
+        itemHtml += '             <span class="mdc-list-item__secondary-text">' + cardType + '</span>'
+        itemHtml += '          </div>'
+        // itemHtml += '       <span class="mdc-list-item__text mdc-list-item__start">' + item.name + '</span>'
         sortName = item.name
       } else {
-        itemHtml += '       <span class="mdc-list-item__text mdc-list-item__start">' + item.id + '</span>'
+        // itemHtml += '       <span class="mdc-list-item__text mdc-list-item__start">' + item.id + '</span>'
+        itemHtml += '          <div class="mdc-list-item__text" style="padding-bottom: 16px;">'
+        itemHtml += '             <span class="mdc-list-item__primary-text">' + item.id + '</span>'
+        itemHtml += '             <span class="mdc-list-item__secondary-text">' + cardType + '</span>'
+        itemHtml += '          </div>'
       }
 
       itemHtml += '     </li>'
