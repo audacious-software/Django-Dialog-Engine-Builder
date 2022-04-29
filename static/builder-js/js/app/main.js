@@ -330,6 +330,19 @@ requirejs(['material', 'app/dialog', 'cookie', 'cards/node', 'jquery'], function
 
     const keys = Object.keys(window.dialogBuilder.cardMapping)
 
+    keys.sort(function (one, two) {
+      const oneClass = window.dialogBuilder.cardMapping[one]
+      const twoClass = window.dialogBuilder.cardMapping[two]
+
+      if (oneClass.cardName() < twoClass.cardName()) {
+        return -1
+      } else if (oneClass.cardName() > twoClass.cardName()) {
+        return 1
+      }
+
+      return 0
+    })
+
     for (let i = 0; i < keys.length; i++) {
       const key = keys[i]
 
