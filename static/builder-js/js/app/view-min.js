@@ -54,7 +54,9 @@ requirejs(['cytoscape', 'cytoscape-dagre', 'cytoscape-cose-bilkent', 'cose-base'
     elements: window.visualizationOptions.source,
     // 'zoomingEnabled': false,
     layout: {
-      name: 'dagre'
+      name: 'dagre',
+      avoidOverlap: true,
+      nodeDimensionsIncludeLabels: true
     },
     //      ready: function(){
     //          this.nodes().forEach(function(node){
@@ -169,6 +171,4 @@ requirejs(['cytoscape', 'cytoscape-dagre', 'cytoscape-cose-bilkent', 'cose-base'
   })
 
   cy.center()
-
-  console.log('DONE')
 })
