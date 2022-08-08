@@ -22,8 +22,8 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
       body += '  <div class="mdc-typography--subtitle2">Timeout Parameters</div>'
       body += '</div>'
       body += '<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-7">'
-      body += '  <div class="mdc-text-field mdc-text-field--outlined" id="' + this.cardId + '_timeout_count"  style="width: 30%">'
-      body += '    <input type="text" class="mdc-text-field__input" id="' + this.cardId + '_timeout_count_value">'
+      body += '  <div class="mdc-text-field mdc-text-field--outlined" id="' + this.cardId + '_timeout_count"  style="width: 40%">'
+      body += '    <input type="number" min="0" class="mdc-text-field__input" id="' + this.cardId + '_timeout_count_value">'
       body += '    <div class="mdc-notched-outline">'
       body += '      <div class="mdc-notched-outline__leading"></div>'
       body += '      <div class="mdc-notched-outline__notch">'
@@ -33,7 +33,7 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
       body += '    </div>'
       body += '  </div>'
 
-      body += '  <div class="mdc-select mdc-select--outlined"  id="' + this.cardId + '_timeout_unit"  style="width: 60%; float: right;">'
+      body += '  <div class="mdc-select mdc-select--outlined"  id="' + this.cardId + '_timeout_unit"  style="width: 55%; float: right;">'
       body += '    <div class="mdc-select__anchor" aria-labelledby="timeout-unit-select-label" style="width: 100%">'
       body += '      <span class="mdc-notched-outline">'
       body += '        <span class="mdc-notched-outline__leading"></span>'
@@ -61,6 +61,7 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
       body += '      </ul>'
       body += '    </div>'
       body += '  </div>'
+      body += '  <a class="mdc-typography--caption" href="#" id="' + this.cardId + '_clear_timeout" style="display: inline-block; padding-left: 4px;">Clear Timeout</a>'
       body += '</div>'
 
       body += '<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-5" style="text-align: right;">'
@@ -231,9 +232,6 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
         const identifier = this.cardId + '_identifier_' + i
         const identifierField = mdc.textField.MDCTextField.attachTo(document.getElementById(identifier))
 
-        console.log('ACTION ' + i)
-        console.log(action)
-
         identifierField.value = action.identifier
 
         $('#' + identifier).on('change keyup paste', function () {
@@ -291,6 +289,18 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
 
         me.dialog.loadNode(me.definition)
         me.dialog.markChanged(me.id)
+      })
+
+      $('#' + this.cardId + '_clear_timeout').on('click', function (eventObj) {
+        eventObj.preventDefault()
+
+        if (window.confirm('Reset timeout options?')) {
+          delete me.definition.timeout
+
+          me.dialog.loadNode(me.definition)
+
+          me.dialog.markChanged(me.id)
+        }
       })
 
       const timeoutCountField = mdc.textField.MDCTextField.attachTo(document.getElementById(this.cardId + '_timeout_count'))

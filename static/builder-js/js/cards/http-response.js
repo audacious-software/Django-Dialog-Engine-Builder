@@ -96,6 +96,7 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
       body += '      <div class="mdc-notched-outline__trailing"></div>'
       body += '    </div>'
       body += '  </div>'
+      body += '  <a class="mdc-typography--caption" href="#" id="' + this.cardId + '_clear_timeout" style="display: inline-block; padding-left: 4px;">Clear Timeout</a>'
       body += '</div>'
       body += '<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4">'
       body += '  <div class="mdc-text-field mdc-text-field--outlined" id="' + this.cardId + '_timeout_times" style="width: 100%">'
@@ -456,12 +457,27 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
         timeoutSecondsField.value = this.definition.timeout
       }
 
+      $('#' + this.cardId + '_clear_timeout').on('click', function (eventObj) {
+        eventObj.preventDefault()
+
+        if (window.confirm('Reset timeout options?')) {
+          delete me.definition.timeout
+          delete me.definition.timeout_node_id
+          delete me.definition.timeout_iterations
+
+          me.dialog.loadNode(me.definition)
+
+          me.dialog.markChanged(me.id)
+        }
+      })
+
       $('#' + this.cardId + '_timeout_seconds_value').change(function (eventObj) {
         const value = $('#' + me.cardId + '_timeout_seconds_value').val()
 
         if (value === '') {
           delete me.definition.timeout
           delete me.definition.timeout_node_id
+          delete me.definition.timeout_iterations
         } else {
           me.definition.timeout = parseInt(value)
         }

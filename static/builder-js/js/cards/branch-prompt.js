@@ -45,6 +45,7 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
       body += '      <div class="mdc-notched-outline__trailing"></div>'
       body += '    </div>'
       body += '  </div>'
+      body += '  <a class="mdc-typography--caption" href="#" id="' + this.cardId + '_clear_timeout" style="display: inline-block; padding-left: 4px;">Clear Timeout</a>'
       body += '</div>'
       body += '<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-4">'
       body += '  <div class="mdc-text-field mdc-text-field--outlined" id="' + this.cardId + '_timeout_times"  style="width: 100%">'
@@ -260,6 +261,20 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
         me.dialog.updateReferences(oldId, value)
 
         me.dialog.markChanged(me.id)
+      })
+
+      $('#' + this.cardId + '_clear_timeout').on('click', function (eventObj) {
+        eventObj.preventDefault()
+
+        if (window.confirm('Reset timeout options?')) {
+          delete me.definition.timeout
+          delete me.definition.timeout_iterations
+          delete me.definition.timeout_node_id
+
+          me.dialog.loadNode(me.definition)
+
+          me.dialog.markChanged(me.id)
+        }
       })
 
       this.dialog.initializeDestinationMenu(me.cardId, function (selected) {
