@@ -1,7 +1,7 @@
 arrow==0.14.7; python_version < '3.0'
 arrow==1.2.2; python_version >= '3.0'
-bandit==1.7.3; python_version >= '3.7'
-bandit==1.7.4; python_version == '3.6'
+bandit==1.7.4; python_version >= '3.7'
+bandit==1.7.1; python_version == '3.6'
 bandit==1.6.2; python_version < '3.0'
 Django==1.11.29; python_version < '3.0'
 Django==3.2.14; python_version >= '3.0'
@@ -9,11 +9,11 @@ future==0.18.2
 jsonpath-ng==1.5.3
 lxml==4.9.1
 psycopg2-binary==2.8.6; python_version < '3.0'
-psycopg2-binary==2.9.1; python_version >= '3.0'
+psycopg2-binary==2.9.3; python_version >= '3.0'
 pylint==2.14.5; python_version >= '3.0'
 pylint==1.9.5; python_version < '3.0'
 python-dateutil==2.8.2
 requests==2.27.1; python_version <= '3.6'
 requests==2.28.1; python_version >= '3.7'
 six==1.16.0
-urllib3==1.26.5
+urllib3==1.26.11
