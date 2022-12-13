@@ -1,8 +1,8 @@
 version: 2.1
 
 orbs:
-  python: circleci/python@2.0.3
-  node: circleci/node@5.0.2
+  python: circleci/python@2.1.1
+  node: circleci/node@5.0.3
 
 workflows:
   build:
@@ -85,6 +85,8 @@ jobs:
       - run:
           name: Validate Javascript code
           command: |
+            nvm install 17.9.1
+            nvm use 17.9.1
             npm install
             npx eslint static/builder-js/js/
       - run:
