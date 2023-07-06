@@ -417,7 +417,7 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
         no_match: id,
         error: id,
         type: 'branch-conditions',
-        id: id
+        id
       }
 
       return card

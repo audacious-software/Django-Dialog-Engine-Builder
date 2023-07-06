@@ -1,4 +1,8 @@
 define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
+  const isLiteralObject = function (a) {
+    return (!!a) && (a.constructor === Object)
+  }
+
   class RandomBranchNode extends Node {
     editBody () {
       let body = ''
@@ -170,10 +174,27 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
       }
 
       $('#' + this.cardId + '_add_choice').on('click', function () {
-        me.definition.actions.push({
-          weight: 1,
-          action: me.id
-        })
+        if (me.definition.actions === undefined) {
+          me.definition.actions = []
+        }
+
+        if (isLiteralObject(me.definition.actions)) {
+          const newActions = []
+
+          for (const value of Object.values(me.definition.actions)) {
+            newActions.push({
+              weight: 1,
+              action: value
+            })
+          }
+
+          me.definition.actions = newActions
+        } else {
+          me.definition.actions.push({
+            weight: 1,
+            action: me.id
+          })
+        }
 
         me.dialog.loadNode(me.definition)
         me.dialog.markChanged(me.id)
@@ -248,7 +269,7 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
           weight: 1,
           action: id
         }],
-        id: id
+        id
       }
 
       return card
