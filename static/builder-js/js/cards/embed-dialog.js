@@ -190,7 +190,7 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
       const card = {
         type: 'embed-dialog',
         name: cardName,
-        id: id
+        id
       }
 
       return card

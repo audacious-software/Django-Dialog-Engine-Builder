@@ -441,7 +441,7 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
           action: id
         }],
         type: 'external-choice',
-        id: id
+        id
       }
 
       return card

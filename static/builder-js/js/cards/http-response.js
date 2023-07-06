@@ -656,7 +656,7 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
         }],
         no_match: id,
         type: 'http-response',
-        id: id
+        id
       }
 
       return card

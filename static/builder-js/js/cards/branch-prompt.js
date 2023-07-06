@@ -634,7 +634,7 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
         }],
         no_match: id,
         type: 'branch-prompt',
-        id: id
+        id
       }
 
       return card
