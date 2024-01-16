@@ -168,29 +168,29 @@ requirejs(['cytoscape', 'cytoscape-dagre', 'cytoscape-cose-bilkent', 'cose-base'
 
   cy.on('tap', 'node', function (evt) {
     const node = evt.target
-    
-    if (node.hasClass('node_group') === false) {
-	    window.parent.dialogBuilder.loadNodeById(node.id())
 
-    	window.parent.dialogBuilder.closeGraphView()
+    if (node.hasClass('node_group') === false) {
+      window.parent.dialogBuilder.loadNodeById(node.id())
+
+      window.parent.dialogBuilder.closeGraphView()
     }
   })
 
   cy.on('mouseover', 'node', function (evt) {
     const node = evt.target
-    
-    if (node.hasClass('node_group') === false) {
-	    document.body.style.cursor = 'pointer'
 
-	    node.addClass('mouse_hover')
-	}
+    if (node.hasClass('node_group') === false) {
+      document.body.style.cursor = 'pointer'
+
+      node.addClass('mouse_hover')
+    }
   })
 
   cy.on('mouseout', 'node', function (evt) {
     const node = evt.target
-    
+
     node.removeClass('mouse_hover')
-    
+
     document.body.style.cursor = 'auto'
   })
 
