@@ -41,12 +41,13 @@ requirejs(['material', 'app/dialog', 'cookie', 'cards/node', 'jquery'], function
 
   let selectedDialog = null
   let dialogIsDirty = false
+  let needsStructureRefresh = true
 
   topAppBar.setScrollTarget(document.getElementById('main-content'))
 
   function onDialogChanged (changedId) {
     window.dialogBuilder.reloadDialog()
-
+    
     $('#action_save').show()
 
     dialogIsDirty = true
@@ -237,7 +238,7 @@ requirejs(['material', 'app/dialog', 'cookie', 'cards/node', 'jquery'], function
       }
     }
   }
-
+  
   window.dialogBuilder.outstandingIssuesDialog = mdc.dialog.MDCDialog.attachTo(document.getElementById('outstanding-issues-dialog'))
 
   $.getJSON(window.dialogBuilder.source, function (data) {
@@ -247,6 +248,8 @@ requirejs(['material', 'app/dialog', 'cookie', 'cards/node', 'jquery'], function
 
     $('#action_save').click(function (eventObj) {
       eventObj.preventDefault()
+
+      needsStructureRefresh = true
 
       const issues = selectedDialog.issues()
 
@@ -392,7 +395,7 @@ requirejs(['material', 'app/dialog', 'cookie', 'cards/node', 'jquery'], function
     try {
       window.dialogBuilder.reloadDialog()
     } catch (err) {
-      console.log('Err')
+      console.log('Error')
       console.log(err)
     }
 
@@ -497,18 +500,28 @@ requirejs(['material', 'app/dialog', 'cookie', 'cards/node', 'jquery'], function
 
     $('#action_view_structure').click(function (eventObj) {
       eventObj.preventDefault()
+      
+      if (dialogIsDirty) {
+        $('#preview-dialog-title').html('Dialog Structure - Save to Display Updates')
+      } else {
+        $('#preview-dialog-title').html('Dialog Structure')
+      }      
 
       $('#preview-dialog-canvas').height(parseInt($(window).height() * 0.9))
       $('#preview-dialog-canvas').width(parseInt($(window).width() * 0.9))
 
       $('#preview-dialog-content').height($('#preview-dialog-canvas').height())
       $('#preview-dialog-content').css('overflow', 'hidden')
-
-      window.dialogBuilder.viewStructureDialog.open()
+      
+      if (needsStructureRefresh) {
+          $('#preview-dialog-canvas').attr('src', window.dialogBuilder.visualization)
+      }
 
       window.setTimeout(function () {
-        $('#preview-dialog-canvas').attr('src', window.dialogBuilder.visualization)
-      }, 100)
+        window.dialogBuilder.viewStructureDialog.open()
+        
+        needsStructureRefresh = false
+      }, 250)
     })
 
     $('input[type="radio"][name="add_card_radio"]').on('change', function () {
@@ -517,6 +530,10 @@ requirejs(['material', 'app/dialog', 'cookie', 'cards/node', 'jquery'], function
       }
     })
   })
+
+  window.dialogBuilder.closeGraphView = function () {
+    window.dialogBuilder.viewStructureDialog.close()
+  }
 
   const viewportHeight = $(window).height()
 

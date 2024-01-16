@@ -226,7 +226,7 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
     }
 
     updateReferences (oldId, newId) {
-      $.each(this.actions, function (index, value) {
+      $.each(this.definition.actions, function (index, value) {
         if (value.action === oldId) {
           value.action = newId
         }
@@ -238,7 +238,7 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
 
       const me = this
 
-      $.each(this.actions, function (index, value) {
+      $.each(this.definition.actions, function (index, value) {
         if (value.action === undefined) {
           issues.push([me.definition.id, 'Choice ' + (1 + index) + ' does not point to another node.', me.definition.name])
         } else if (value.action === me.definition.id) {
