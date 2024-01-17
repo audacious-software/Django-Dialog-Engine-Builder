@@ -1,0 +1,19 @@
+{
+  "name": "Django Dialog Engine Builder",
+  "short_name": "Dialog Builder",
+  "icons": [
+    {
+      "src": "/static/builder-js/icons/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/builder-js/icons/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#263238",
+  "background_color": "#263238",
+  "display": "browser"
+}

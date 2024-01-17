@@ -47,8 +47,6 @@ requirejs(['cytoscape', 'cytoscape-dagre', 'cytoscape-cose-bilkent', 'cose-base'
 
   cytoscapeDagre(cytoscape) // register extension
 
-  // cytoscape_cose_bilkent(cytoscape);
-
   const cy = cytoscape({
     container: $(window.visualizationOptions.container),
     elements: window.visualizationOptions.source,
@@ -58,15 +56,6 @@ requirejs(['cytoscape', 'cytoscape-dagre', 'cytoscape-cose-bilkent', 'cose-base'
       avoidOverlap: true,
       nodeDimensionsIncludeLabels: true
     },
-    //      ready: function(){
-    //          this.nodes().forEach(function(node){
-    //              let width = [30, 70, 110];
-    //              let size = width[Math.floor(Math.random()*3)];
-    //              node.css("width", size);
-    //              node.css("height", size);
-    //          });
-    //          this.layout({name: 'cose-bilkent', animationDuration: 1000}).run();
-    //      },
     style: [{
       selector: 'node',
       style: {
@@ -167,7 +156,42 @@ requirejs(['cytoscape', 'cytoscape-dagre', 'cytoscape-cose-bilkent', 'cose-base'
         'text-margin-y': '-10px',
         'font-weight': 'bold'
       }
+    }, {
+      selector: '.mouse_hover',
+      style: {
+        'border-width': '1px',
+        'border-opacity': '1.0',
+        'border-color': 'black'
+      }
     }]
+  })
+
+  cy.on('tap', 'node', function (evt) {
+    const node = evt.target
+
+    if (node.hasClass('node_group') === false) {
+      window.parent.dialogBuilder.loadNodeById(node.id())
+
+      window.parent.dialogBuilder.closeGraphView()
+    }
+  })
+
+  cy.on('mouseover', 'node', function (evt) {
+    const node = evt.target
+
+    if (node.hasClass('node_group') === false) {
+      document.body.style.cursor = 'pointer'
+
+      node.addClass('mouse_hover')
+    }
+  })
+
+  cy.on('mouseout', 'node', function (evt) {
+    const node = evt.target
+
+    node.removeClass('mouse_hover')
+
+    document.body.style.cursor = 'auto'
   })
 
   cy.center()

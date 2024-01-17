@@ -159,8 +159,6 @@ define(['material', 'jquery'], function (mdc) {
         const dialog = this.dialog
 
         dialog.changeCardType(this.id, this.definition.type, function (cardType) {
-          console.log('SELECTED: ' + cardType + ' FOR ' + cardId)
-
           $.each(dialog.definition, function (index, node) {
             if (node.id === cardId) {
               node.type = cardType

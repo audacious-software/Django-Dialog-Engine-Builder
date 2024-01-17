@@ -9,6 +9,11 @@
         <link rel="stylesheet" href="{% static 'builder-js/vendor/material-components-web-11.0.0.css' %}" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'builder-js/icons/apple-touch-icon.png' %}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static 'builder-js/icons/favicon-32x32.png' %}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static 'builder-js/icons/favicon-16x16.png' %}">
+        <link rel="manifest" href="{% static 'builder-js/icons/site.webmanifest' %}">
+
         <title>Dialog Builder</title>
         <style>
             body {
@@ -31,6 +36,7 @@
             .app-bar {
                 position: absolute;
                 z-index: 10;
+                background-color: #263238;
             }
 
             .mdc-top-app-bar {
@@ -46,7 +52,8 @@
         <header class="mdc-top-app-bar app-bar mdc-top-app-bar--fixed" id="app-bar">
             <div class="mdc-top-app-bar__row">
                 <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
-                    <a href="javascript:window.history.back();" class="demo-menu material-icons mdc-top-app-bar__navigation-icon">arrow_back</a>
+                    <!-- <a href="javascript:window.history.back();" class="demo-menu material-icons mdc-top-app-bar__navigation-icon">arrow_back</a> -->
+                    <img src="{% static 'builder-js/icons/navbar-512.png' %}" style="height: 24px;" alt="Django Dialog Engine Builder" />
                     <span id="dialog-name" class="mdc-top-app-bar__title">{{ dialog.name }}</span>
                     <span id="dialog-identifier" style="display: none;">{{ dialog.identifier }}</span>
                 </section>
