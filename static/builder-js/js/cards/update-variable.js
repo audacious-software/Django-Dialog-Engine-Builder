@@ -60,7 +60,7 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
       body += '          <span class="mdc-list-item__ripple"></span>'
       body += '          <span class="mdc-list-item__text">Clear or create list</span>'
       body += '        </li>'
-      body += '        <li class="mdc-list-item" aria-selected="false" data-value="clear-list" role="option">'
+      body += '        <li class="mdc-list-item" aria-selected="false" data-value="increment" role="option">'
       body += '          <span class="mdc-list-item__ripple"></span>'
       body += '          <span class="mdc-list-item__text">Increment (numeric values only)</span>'
       body += '        </li>'
@@ -124,7 +124,25 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
     }
 
     viewBody () {
-      return '<div class="mdc-typography--body1" style="margin: 16px;">Updates variable: <em>' + this.definition.key + ' ?? ' + this.definition.value + '</em></div>'
+      let suffix = `(${this.definition.operation}) ${this.definition.value}`
+
+      if (this.definition.operation === 'set') {
+        suffix = `&coloneq; ${this.definition.value}`
+      } else if (this.definition.operation === 'remove') {
+        suffix = `\\ ${this.definition.value}`
+      } else if (this.definition.operation === 'replace') {
+        suffix = `&coloneq; ${this.definition.value} &cularr; ${this.definition.replacement}`
+      } else if (this.definition.operation === 'append-list') {
+        suffix = `&rarrb; ${this.definition.value}`
+      } else if (this.definition.operation === 'prepend-list') {
+        suffix = `&larrb; ${this.definition.value}`
+      } else if (this.definition.operation === 'clear-list') {
+        suffix = '&coloneq; []'
+      } else if (this.definition.operation === 'increment') {
+        suffix = `+= ${this.definition.value}`
+      }
+
+      return `<div class="mdc-typography--body1" style="margin: 16px;">Updates variable: <em>${this.definition.key} ${suffix}</em></div>`
     }
 
     initialize () {
@@ -148,9 +166,8 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
 
       const replacementField = mdc.textField.MDCTextField.attachTo(document.getElementById(this.cardId + '_replacement_field'))
 
-      if (this.definition.value !== undefined) {
-        // TODO - parse replacement and set
-        // replacementField.value = this.definition.value
+      if (this.definition.replacement !== undefined) {
+        replacementField.value = this.definition.replacement
       }
 
       $('#' + this.cardId + '_replacement_value').on('change keyup paste', function () {
@@ -175,29 +192,28 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
         me.dialog.markChanged(me.id)
       })
 
-		const operationField = mdc.select.MDCSelect.attachTo(document.getElementById(me.cardId + '_operation_field'))
+      const operationField = mdc.select.MDCSelect.attachTo(document.getElementById(me.cardId + '_operation_field'))
 
-		operationField.listen('MDCSelect:change', () => {
-		  const originalOperation = me.definition.operation
+      operationField.listen('MDCSelect:change', () => {
+        const originalOperation = me.definition.operation
 
-		  me.definition.operation = operationField.value
-		  
-		  if (me.definition.operation === 'replace') {
-	        $('#' + me.cardId + '_replacement_row').show()
-		  } else {
-	        $('#' + me.cardId + '_replacement_row').hide()
-		  }
+        me.definition.operation = operationField.value
 
-		  if (originalOperation !== me.definition.operation) {
-			me.dialog.markChanged(me.id)
-		  }
-		})
+        if (me.definition.operation === 'replace') {
+          $('#' + me.cardId + '_replacement_row').show()
+        } else {
+          $('#' + me.cardId + '_replacement_row').hide()
+        }
 
-       $('#' + me.cardId + '_replacement_row').hide()
+        if (originalOperation !== me.definition.operation) {
+          me.dialog.markChanged(me.id)
+        }
+      })
 
+      $('#' + me.cardId + '_replacement_row').hide()
 
       if (this.definition.operation !== undefined && this.definition.operation !== null) {
-		operationField.value = this.definition.operation
+        operationField.value = this.definition.operation
       } else {
         operationField.value = 'reset'
       }
