@@ -26,6 +26,7 @@ CARDS = (
     ('Time-Elapsed Interrupt', 'time-elapsed-interrupt',),
     ('Embedded Dialog', 'embed-dialog',),
     ('Record Variable', 'record-variable',),
+    ('Update Variable', 'update-variable',),
 )
 
 class Command(BaseCommand):
