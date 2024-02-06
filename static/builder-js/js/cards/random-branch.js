@@ -1,3 +1,4 @@
+
 define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
   const isLiteralObject = function (a) {
     return (!!a) && (a.constructor === Object)
@@ -243,7 +244,7 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
           issues.push([me.definition.id, 'Choice ' + (1 + index) + ' does not point to another node.', me.definition.name])
         } else if (value.action === me.definition.id) {
           issues.push([me.definition.id, 'Choice ' + (1 + index) + ' points to self.', me.definition.name])
-        } else if (this.isValidDestination(value.action) === false) {
+        } else if (me.isValidDestination(value.action) === false) {
           issues.push([me.definition.id, 'Choice ' + (1 + index) + ' points to a non-existent node.', me.definition.name])
         }
       })
