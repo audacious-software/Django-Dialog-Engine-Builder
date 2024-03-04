@@ -1,8 +1,6 @@
-# pylint: disable=no-name-in-module
+# pylint: disable=no-name-in-module, line-too-long
 
 import sys
-
-import django
 
 from .views import builder_add_dialog, builder_dialog_definition_json, builder_dialog, \
                    builder_interaction_card, builder_dialog_html_view, builder_embeddable_dialogs_json
