@@ -97,9 +97,9 @@ jobs:
             sudo apt-get update && sudo apt-get install -y gdal-bin
             python3 -m venv --copies /home/circleci/venv
             . /home/circleci/venv/bin/activate
-            pip install -r requirements.txt --progress-bar off
             pip install -U pip
             pip install -U wheel
+            pip install -r requirements.txt --progress-bar off
             cd ..
             mv project django_dialog_engine_builder
             mkdir django
@@ -154,9 +154,9 @@ jobs:
             sudo apt-get update && sudo apt-get install -y gdal-bin
             python3 -m venv --copies /home/circleci/venv
             . /home/circleci/venv/bin/activate
-            pip install -r requirements.txt --progress-bar off
             pip install -U pip
             pip install -U wheel
+            pip install -r requirements.txt --progress-bar off
             cd ..
             mv project django_dialog_engine_builder
             mkdir django
@@ -213,9 +213,9 @@ jobs:
             sudo apt-get update && sudo apt-get install -y gdal-bin
             virtualenv --copies /home/circleci/venv
             . /home/circleci/venv/bin/activate
-            pip install -r requirements.txt --progress-bar off
             pip install -U pip
             pip install -U wheel
+            pip install -r requirements.txt --progress-bar off
             cd ..
             mv project django_dialog_engine_builder
             mkdir django
