@@ -314,7 +314,7 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
         if (pattern === undefined || pattern === null) {
           pattern = ''
         }
-        
+
         if (pattern === '') {
           operationField.value = 'contains'
           patternField.value = ''
