@@ -315,7 +315,9 @@ define(['material', 'jquery'], function (mdc) {
     }
 
     static humanizePattern (pattern) {
-      if (pattern.startsWith('^[') && pattern.endsWith(']')) {
+      if (pattern === undefined || pattern === null) {
+        return '(Null or undefined pattern.)'
+      } else if (pattern.startsWith('^[') && pattern.endsWith(']')) {
         const matches = []
 
         for (let i = 2; i < pattern.length - 1; i++) {
