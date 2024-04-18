@@ -13,11 +13,13 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import mark_safe
+from django.views.decorators.cache import never_cache
 
 from django_dialog_engine.models import DialogScript
 
 from .models import InteractionCard
 
+@never_cache
 @staff_member_required
 def builder_dialog(request, dialog): # pylint: disable=unused-argument
     context = {}
@@ -52,12 +54,14 @@ def builder_dialog(request, dialog): # pylint: disable=unused-argument
 
     return render(request, 'builder_js.html', context=context)
 
+@never_cache
 @staff_member_required
 def builder_dialog_definition_json(request, dialog): # pylint: disable=unused-argument
     dialog_script = DialogScript.objects.filter(pk=str(dialog)).first()
 
     return HttpResponse(json.dumps(dialog_script.definition, indent=2), content_type='application/json', status=200)
 
+@never_cache
 @staff_member_required
 def builder_embeddable_dialogs_json(request): # pylint: disable=unused-argument
     dialogs_json = []
@@ -70,6 +74,7 @@ def builder_embeddable_dialogs_json(request): # pylint: disable=unused-argument
 
     return HttpResponse(json.dumps(dialogs_json, indent=2), content_type='application/json', status=200)
 
+@never_cache
 def builder_interaction_card(request, card): # pylint: disable=unused-argument
     card = get_object_or_404(InteractionCard, identifier=card)
 
@@ -83,8 +88,9 @@ def builder_interaction_card(request, card): # pylint: disable=unused-argument
     return response
 
 @staff_member_required
+@never_cache
 def builder_add_dialog(request): # pylint: disable=unused-argument
-    dialog = DialogScript(name='New SMS EMA', created=timezone.now())
+    dialog = DialogScript(name='New Dialog', created=timezone.now())
 
     dialog.definition = [{
         "next_id": "echo-1",
@@ -119,6 +125,7 @@ def builder_add_dialog(request): # pylint: disable=unused-argument
     return redirect('builder_dialog', dialog.pk)
 
 # @staff_member_required
+@never_cache
 def builder_dialog_html_view(request, dialog): # pylint: disable=unused-argument
     context = {
         'dialog': DialogScript.objects.filter(pk=str(dialog)).first()
