@@ -72,7 +72,7 @@ jobs:
 
   build-37:
     docker:
-      - image: cimg/python:3.8
+      - image: cimg/python:3.7
       - image: cimg/postgres:12.18-postgis
         auth:
           username: mydockerhub-user
