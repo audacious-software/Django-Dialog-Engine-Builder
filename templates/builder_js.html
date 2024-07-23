@@ -402,7 +402,6 @@
                     'definition': JSON.stringify(definition, 2)
                 };
                 
-                success();                
                 $.post("{% url 'builder_dialog' dialog.pk %}", payload, function(data) {
                     success();
                 });
