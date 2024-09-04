@@ -75,6 +75,20 @@ def builder_embeddable_dialogs_json(request): # pylint: disable=unused-argument
     return HttpResponse(json.dumps(dialogs_json, indent=2), content_type='application/json', status=200)
 
 @never_cache
+@staff_member_required
+def builder_active_dialogs_json(request): # pylint: disable=unused-argument
+    dialogs_json = []
+
+    for script in DialogScript.objects.exclude(identifier=None).order_by('name'):
+        if script.is_active():
+            dialogs_json.append({
+                'id': script.identifier,
+                'name': script.name
+            })
+
+    return HttpResponse(json.dumps(dialogs_json, indent=2), content_type='application/json', status=200)
+
+@never_cache
 def builder_interaction_card(request, card): # pylint: disable=unused-argument
     card = get_object_or_404(InteractionCard, identifier=card)
 
@@ -128,7 +142,7 @@ def builder_add_dialog(request): # pylint: disable=unused-argument
 @never_cache
 def builder_dialog_html_view(request, dialog): # pylint: disable=unused-argument
     context = {
-        'dialog': DialogScript.objects.filter(pk=str(dialog)).first()
+        'dialog': get_object_or_404(DialogScript, pk=int(dialog))
     }
 
     response = render(request, 'builder_view_min.html', context=context)

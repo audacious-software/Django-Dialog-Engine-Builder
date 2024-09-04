@@ -3,7 +3,8 @@
 import sys
 
 from .views import builder_add_dialog, builder_dialog_definition_json, builder_dialog, \
-                   builder_interaction_card, builder_dialog_html_view, builder_embeddable_dialogs_json
+                   builder_interaction_card, builder_dialog_html_view, builder_embeddable_dialogs_json, \
+                   builder_active_dialogs_json
 
 if sys.version_info[0] > 2:
     from django.urls import re_path
@@ -15,6 +16,7 @@ if sys.version_info[0] > 2:
         re_path(r'^dialog/(?P<dialog>.+).html$', builder_dialog_html_view, name='builder_dialog_html_view'),
         re_path(r'^dialog/(?P<dialog>.+)', builder_dialog, name='builder_dialog'),
         re_path(r'^embeddable-dialogs.json', builder_embeddable_dialogs_json, name='builder_embeddable_dialogs'),
+        re_path(r'^active-dialogs.json', builder_active_dialogs_json, name='builder_active_dialogs'),
     ]
 else:
     from django.conf.urls import url
@@ -26,4 +28,5 @@ else:
         url(r'^dialog/(?P<dialog>.+).html$', builder_dialog_html_view, name='builder_dialog_html_view'),
         url(r'^dialog/(?P<dialog>.+)', builder_dialog, name='builder_dialog'),
         url(r'^embeddable-dialogs.json', builder_embeddable_dialogs_json, name='builder_embeddable_dialogs'),
+        url(r'^active-dialogs.json', builder_active_dialogs_json, name='builder_active_dialogs'),
     ]
