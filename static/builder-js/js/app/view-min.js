@@ -41,7 +41,7 @@ requirejs.config({
   }
 })
 
-requirejs(['cytoscape', 'cytoscape-dagre', 'cytoscape-cose-bilkent', 'cose-base', 'layout-base', 'jquery'], function (cytoscape, cytoscapeDagre, cytoscapeCoseNilkent) {
+requirejs(['material', 'cytoscape', 'cytoscape-dagre', 'cytoscape-cose-bilkent', 'cose-base', 'layout-base', 'jquery'], function (mdc, cytoscape, cytoscapeDagre, cytoscapeCoseNilkent) {
   $('#cytoscape_canvas').height($(window).height())
   $('#cytoscape_canvas').width($(window).width())
 
@@ -163,6 +163,14 @@ requirejs(['cytoscape', 'cytoscape-dagre', 'cytoscape-cose-bilkent', 'cose-base'
         'border-opacity': '1.0',
         'border-color': 'black'
       }
+    }, {
+      selector: '.search_match',
+      style: {
+        'background-color': '#B39DDB',
+        'border-width': '10px',
+        'border-opacity': '1.0',
+        'border-color': '#673AB7'
+      }
     }]
   })
 
@@ -195,4 +203,50 @@ requirejs(['cytoscape', 'cytoscape-dagre', 'cytoscape-cose-bilkent', 'cose-base'
   })
 
   cy.center()
+  
+  const searchField = mdc.textField.MDCTextField.attachTo(document.getElementById('search_field'))
+
+  const nodes = cy.nodes()
+
+  $('#search_field_text').on('input', function() {
+    let query = $('#search_field input').val()
+
+    for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i]
+
+        node.removeClass('search_match')
+    }
+
+    $('#node_count').html(`${nodes.length}`)
+    $('#node_matching').hide()
+    
+    if (query !== '') {
+      query = query.toLowerCase()
+ 
+      let matches = 0
+
+      for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i]
+            
+        let search = JSON.stringify(node.data('dde_search_text'))
+            
+        if (search !== undefined) {
+          search = search.toLowerCase()
+                
+          if (search.includes(query)) {
+            node.addClass('search_match')
+                    
+            matches += 1
+          }
+        }
+      }
+        
+      $('#node_matching').show()
+
+      $('#node_count').html(`${matches}`)
+    }
+  })
+
+  $('#node_count').html(`${nodes.length}`)
+  $('#node_matching').hide()
 })

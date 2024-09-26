@@ -19,6 +19,7 @@ def cytoscape_json(dialog):
                 'id': node.node_id,
                 'name': node.node_name,
                 'dde_node_type': node.node_type(),
+                'dde_search_text': node.search_text()
             },
             'classes': ['node_' + node.node_type()],
             'group': 'nodes'
