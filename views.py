@@ -14,6 +14,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import mark_safe
 from django.views.decorators.cache import never_cache
+from django.views.decorators.clickjacking import xframe_options_sameorigin
 
 from django_dialog_engine.models import DialogScript
 
@@ -138,7 +139,7 @@ def builder_add_dialog(request): # pylint: disable=unused-argument
 
     return redirect('builder_dialog', dialog.pk)
 
-# @staff_member_required
+@xframe_options_sameorigin
 @never_cache
 def builder_dialog_html_view(request, dialog): # pylint: disable=unused-argument
     context = {
