@@ -5,7 +5,7 @@
 	<head>
         <link rel="stylesheet" href="{% static 'builder-js/vendor/material-components-web-11.0.0.css' %}" />
     </head>
-	
+
     <body class="mdc-typography" style="padding: 0px; margin: 0px;">
 		<div class="mdc-layout-grid" style="width: 320px; position: absolute; top: 16px; right: 16px; z-index: 999; border: thin solid #808080; padding: 12px; background-color: #fff; border-radius: 8px;">
 			<label class="mdc-text-field mdc-text-field--outlined" id="search_field" style="width: 100%;">
@@ -18,13 +18,13 @@
 				</span>
 				<input type="text" id="search_field_text" class="mdc-text-field__input" aria-labelledby="search-label">
 			</label>
-			<div class="mdc-typography--body-1" style="margin-top: 12px; margin-left: 16px;">
+			<div class="mdc-typography--body-1" style="margin-top: 12px; margin-left: 8px;">
 				<strong id="node_count">XXX</strong> <span id="node_matching" style="display: none;">matching</span> nodes
 			</div>
 		</div>
 		<div id="cytoscape_canvas" style="padding: 0px; margin: 0px; background-color: #eeeeee;"></div>
     </body>
-    
+
     <script>
         window.visualizationOptions = {
             name: "{{ dialog.name }}",
