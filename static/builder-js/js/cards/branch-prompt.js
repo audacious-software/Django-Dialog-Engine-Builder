@@ -19,12 +19,12 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
       body += '</div>'
 
       body += '<div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">'
-      body += '  <div class="mdc-text-field mdc-text-field--outlined" id="' + this.cardId + '_identifier" style="width: 100%">'
-      body += '    <input class="mdc-text-field__input" type="text" id="' + this.cardId + '_identifier_value">'
+      body += '  <div class="mdc-text-field mdc-text-field--outlined" id="' + this.cardId + '_variable" style="width: 100%">'
+      body += '    <input class="mdc-text-field__input" type="text" id="' + this.cardId + '_variable_value">'
       body += '    <div class="mdc-notched-outline">'
       body += '      <div class="mdc-notched-outline__leading"></div>'
       body += '      <div class="mdc-notched-outline__notch">'
-      body += '        <label for="' + this.cardId + '_identifier_value" class="mdc-floating-label">Variable Name</label>'
+      body += '        <label for="' + this.cardId + '_variable_value" class="mdc-floating-label">Variable Name</label>'
       body += '      </div>'
       body += '      <div class="mdc-notched-outline__trailing"></div>'
       body += '    </div>'
@@ -247,18 +247,19 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
         me.dialog.markChanged(me.id)
       })
 
-      const identifierField = mdc.textField.MDCTextField.attachTo(document.getElementById(this.cardId + '_identifier'))
-      identifierField.value = this.definition.id
+      const variableField = mdc.textField.MDCTextField.attachTo(document.getElementById(this.cardId + '_variable'))
 
-      $('#' + this.cardId + '_identifier_value').on('change keyup paste', function () {
-        const value = $('#' + me.cardId + '_identifier_value').val()
+      if (this.definition.variable === undefined) {
+	    this.definition.variable = this.definition.id
+        me.dialog.markChanged(me.id)
+	  }
 
-        const oldId = me.definition.id
+	  variableField.value = this.definition.variable
 
-        me.definition.id = value
-        me.id = value
+      $('#' + this.cardId + '_variable_value').on('change keyup paste', function () {
+        const value = $('#' + me.cardId + '_variable_value').val()
 
-        me.dialog.updateReferences(oldId, value)
+        me.definition.variable = value
 
         me.dialog.markChanged(me.id)
       })
