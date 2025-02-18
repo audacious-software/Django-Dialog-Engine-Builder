@@ -250,11 +250,11 @@ define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
       const variableField = mdc.textField.MDCTextField.attachTo(document.getElementById(this.cardId + '_variable'))
 
       if (this.definition.variable === undefined) {
-	    this.definition.variable = this.definition.id
+        this.definition.variable = this.definition.id
         me.dialog.markChanged(me.id)
-	  }
+      }
 
-	  variableField.value = this.definition.variable
+      variableField.value = this.definition.variable
 
       $('#' + this.cardId + '_variable_value').on('change keyup paste', function () {
         const value = $('#' + me.cardId + '_variable_value').val()
