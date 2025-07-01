@@ -3,6 +3,8 @@
 from __future__ import unicode_literals
 
 from builtins import str # pylint: disable=redefined-builtin
+
+import importlib
 import json
 import os
 
@@ -13,6 +15,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import mark_safe
+from django.utils.text import slugify
 from django.views.decorators.cache import never_cache
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 
@@ -150,3 +153,90 @@ def builder_dialog_html_view(request, dialog): # pylint: disable=unused-argument
     response['X-Frame-Options'] = 'SAMEORIGIN'
 
     return response
+
+@staff_member_required
+def dashboard_dialog_scripts(request):
+    context = {}
+
+    context['dialogs'] = DialogScript.objects.all().order_by('name')
+
+    return render(request, 'dashboard/dashboard_dialog_scripts.html', context=context)
+
+@staff_member_required
+def dashboard_dialog_create(request):
+    identifier = request.POST.get('identifier', None)
+    name = request.POST.get('name', None)
+
+    if None in (name, identifier):
+        payload = {
+            'message': 'Unable to create dialog script.'
+        }
+    else:
+        script = DialogScript.objects.filter(identifier=identifier).first()
+
+        if script is None:
+            payload = {
+                'message': 'Unable to locate dialog script to copy (%s).' % identifier
+            }
+        else:
+            new_id = slugify(name)
+
+            index = 1
+
+            while DialogScript.objects.filter(identifier=new_id).count() > 0:
+                new_id = slugify('%s %s' % (name, index))
+
+            script.pk = None
+            script.name = name
+            script.identifier = new_id
+
+            script.save()
+
+            payload = {
+                'message': 'New dialog script created.'
+            }
+
+    return HttpResponse(json.dumps(payload, indent=2), content_type='application/json', status=200)
+
+@staff_member_required
+def dashboard_dialog_delete(request):
+    identifier = request.POST.get('identifier', None)
+
+    deleted = DialogScript.objects.filter(identifier=identifier).delete()
+
+    payload = {
+        'message': '%s dialog script(s) deleted.' % deleted[0]
+    }
+
+    return HttpResponse(json.dumps(payload, indent=2), content_type='application/json', status=200)
+
+@staff_member_required
+def dashboard_dialog_start(request):
+    identifier = request.POST.get('identifier', None)
+    destination = request.POST.get('destination', None)
+
+    started = False
+
+    for app in settings.INSTALLED_APPS:
+        try:
+            dialog_module = importlib.import_module('.dialog_api', package=app)
+
+            if dialog_module.launch_dialog_script(identifier, destination):
+                started = True
+
+                break
+        except ImportError:
+            pass
+        except AttributeError:
+            pass
+
+    payload = {
+        'message': 'Unable to launch dialog.'
+    }
+
+    if started:
+        payload = {
+            'message': 'Dialog launched.'
+        }
+
+    return HttpResponse(json.dumps(payload, indent=2), content_type='application/json', status=200)
