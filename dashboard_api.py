@@ -3,6 +3,6 @@ from django.urls import reverse
 def dashboard_pages():
     return [{
         'title': 'Dialog Scripts',
-        'icon': 'speaker_notes',
+        'icon': 'account_tree',
         'url': reverse('dashboard_dialog_scripts'),
     }]

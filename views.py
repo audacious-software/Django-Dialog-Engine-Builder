@@ -10,6 +10,7 @@ import os
 
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
+from django.db.models import Q
 from django.http import HttpResponse, FileResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
@@ -156,9 +157,63 @@ def builder_dialog_html_view(request, dialog): # pylint: disable=unused-argument
 
 @staff_member_required
 def dashboard_dialog_scripts(request):
-    context = {}
+    context = {
+        'include_search': True
+    }
 
-    context['dialogs'] = DialogScript.objects.all().order_by('name')
+    offset = int(request.GET.get('offset', '0'))
+    limit = int(request.GET.get('limit', '25'))
+    query = request.GET.get('q', None)
+    label = request.GET.get('label', None)
+
+    dialog_objects = DialogScript.objects.all()
+
+    if (query in (None, '')) is False:
+        search_query = Q(name__icontains=query) | Q(identifier__icontains=query)
+        search_query =  search_query | Q(labels__icontains=query) | Q(definition__icontains=query)
+
+        dialog_objects = DialogScript.objects.filter(search_query)
+
+    if (label in (None, '')) is False:
+        label_query = Q(labels=label) | Q(labels__startswith='%s\n' % label) | Q(labels__contains=('\n%s\n' % label)) |  Q(labels__endswith='\n%s' % label)
+        label_query = label_query | Q(labels__contains=('|%s\n' % label)) | Q(labels__endswith='|%s' % label)
+
+        dialog_objects = dialog_objects.filter(label_query)
+
+    total = dialog_objects.count()
+
+    context['dialogs'] = dialog_objects.order_by('name')[offset:(offset + limit)]
+    context['total'] = total
+    context['start'] = offset + 1
+    context['end'] = offset + limit
+
+    if context['end'] > total:
+        context['end'] = total
+
+    if (offset - limit) >= 0:
+        context['previous'] = '%s?offset=%s&limit=%s' % (reverse('dashboard_dialog_scripts'), offset - limit, limit)
+
+    if (offset + limit) < total:
+        context['next'] = '%s?offset=%s&limit=%s' % (reverse('dashboard_dialog_scripts'), offset + limit, limit)
+
+    context['first'] = '%s?offset=0&limit=%s' % (reverse('dashboard_dialog_scripts'), limit)
+
+    last = int(total / limit) * limit
+
+    context['last'] = '%s?offset=%s&limit=%s' % (reverse('dashboard_dialog_scripts'), last, limit)
+
+    all_labels = []
+
+    for script in DialogScript.objects.all():
+        for label in script.labels_list():
+            cleaned_label = label.split('|')[-1]
+
+            if (cleaned_label in all_labels) is False:
+                all_labels.append(cleaned_label)
+
+    all_labels.sort()
+
+    context['labels'] = all_labels
 
     return render(request, 'dashboard/dashboard_dialog_scripts.html', context=context)
 
@@ -212,31 +267,54 @@ def dashboard_dialog_delete(request):
 
 @staff_member_required
 def dashboard_dialog_start(request):
-    identifier = request.POST.get('identifier', None)
-    destination = request.POST.get('destination', None)
+    if request.method == 'POST':
+        identifier = request.POST.get('identifier', None)
+        destination = request.POST.get('destination', None)
 
-    started = False
+        interrupt_seconds = request.POST.get('interrupt_seconds', None)
+        pause_seconds = request.POST.get('pause_seconds', None)
+        timeout_seconds = request.POST.get('timeout_seconds', None)
+        dialog_variables = request.POST.get('dialog_variables', '').split('\n')
 
-    for app in settings.INSTALLED_APPS:
-        try:
-            dialog_module = importlib.import_module('.dialog_api', package=app)
+        dialog_options = {}
 
-            if dialog_module.launch_dialog_script(identifier, destination):
-                started = True
+        if interrupt_seconds is not None and interrupt_seconds != '':
+            dialog_options['interrupt_minutes'] = float(interrupt_seconds) / 60
 
-                break
-        except ImportError:
-            pass
-        except AttributeError:
-            pass
+        if pause_seconds is not None and pause_seconds != '':
+            dialog_options['pause_minutes'] = float(pause_seconds) / 60
 
-    payload = {
-        'message': 'Unable to launch dialog.'
-    }
+        if timeout_seconds is not None and timeout_seconds != '':
+            dialog_options['timeout_minutes'] = float(timeout_seconds) / 60
 
-    if started:
+        for variable in dialog_variables:
+            pair = variable.split('=')
+
+            if len(pair) > 1:
+                dialog_options[pair[0].strip()] = pair[1].strip()
+
+        started = False
+
+        for app in settings.INSTALLED_APPS:
+            try:
+                dialog_module = importlib.import_module('.dialog_api', package=app)
+
+                if dialog_module.launch_dialog_script(identifier, destination, dialog_options):
+                    started = True
+
+                    break
+            except ImportError:
+                pass
+            except AttributeError:
+                pass
+
         payload = {
-            'message': 'Dialog launched.'
+            'message': 'Unable to launch dialog.'
         }
 
-    return HttpResponse(json.dumps(payload, indent=2), content_type='application/json', status=200)
+        if started:
+            payload = {
+                'message': 'Dialog launched.'
+            }
+
+        return HttpResponse(json.dumps(payload, indent=2), content_type='application/json', status=200)
