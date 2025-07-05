@@ -169,14 +169,14 @@ def dashboard_dialog_scripts(request):
     dialog_objects = DialogScript.objects.all()
 
     if (query in (None, '')) is False:
-        search_query = Q(name__icontains=query) | Q(identifier__icontains=query)
-        search_query =  search_query | Q(labels__icontains=query) | Q(definition__icontains=query)
+        search_query = Q(name__icontains=query) | Q(identifier__icontains=query) # pylint: disable=unsupported-binary-operation
+        search_query = search_query | Q(labels__icontains=query) | Q(definition__icontains=query) # pylint: disable=unsupported-binary-operation
 
         dialog_objects = DialogScript.objects.filter(search_query)
 
     if (label in (None, '')) is False:
-        label_query = Q(labels=label) | Q(labels__startswith='%s\n' % label) | Q(labels__contains=('\n%s\n' % label)) |  Q(labels__endswith='\n%s' % label)
-        label_query = label_query | Q(labels__contains=('|%s\n' % label)) | Q(labels__endswith='|%s' % label)
+        label_query = Q(labels=label) | Q(labels__startswith='%s\n' % label) | Q(labels__contains=('\n%s\n' % label)) |  Q(labels__endswith='\n%s' % label) # pylint: disable=unsupported-binary-operation, superfluous-parens
+        label_query = label_query | Q(labels__contains=('|%s\n' % label)) | Q(labels__endswith='|%s' % label) # pylint: disable=unsupported-binary-operation,
 
         dialog_objects = dialog_objects.filter(label_query)
 
@@ -267,6 +267,10 @@ def dashboard_dialog_delete(request):
 
 @staff_member_required
 def dashboard_dialog_start(request):
+    payload = {
+        'message': 'Unable to launch dialog.'
+    }
+
     if request.method == 'POST':
         identifier = request.POST.get('identifier', None)
         destination = request.POST.get('destination', None)
@@ -308,13 +312,9 @@ def dashboard_dialog_start(request):
             except AttributeError:
                 pass
 
-        payload = {
-            'message': 'Unable to launch dialog.'
-        }
-
         if started:
             payload = {
                 'message': 'Dialog launched.'
             }
 
-        return HttpResponse(json.dumps(payload, indent=2), content_type='application/json', status=200)
+    return HttpResponse(json.dumps(payload, indent=2), content_type='application/json', status=200)
