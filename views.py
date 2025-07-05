@@ -176,7 +176,7 @@ def dashboard_dialog_scripts(request):
 
     if (label in (None, '')) is False:
         label_query = Q(labels=label) | Q(labels__startswith='%s\n' % label) | Q(labels__contains=('\n%s\n' % label)) |  Q(labels__endswith='\n%s' % label) # pylint: disable=unsupported-binary-operation, superfluous-parens
-        label_query = label_query | Q(labels__contains=('|%s\n' % label)) | Q(labels__endswith='|%s' % label) # pylint: disable=unsupported-binary-operation,
+        label_query = label_query | Q(labels__contains=('|%s\n' % label)) | Q(labels__endswith='|%s' % label) # pylint: disable=unsupported-binary-operation, superfluous-parens
 
         dialog_objects = dialog_objects.filter(label_query)
 
