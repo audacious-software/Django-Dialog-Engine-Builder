@@ -3,16 +3,20 @@
 from __future__ import unicode_literals
 
 from builtins import str # pylint: disable=redefined-builtin
+
+import importlib
 import json
 import os
 
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
+from django.db.models import Q
 from django.http import HttpResponse, FileResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import mark_safe
+from django.utils.text import slugify
 from django.views.decorators.cache import never_cache
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 
@@ -150,3 +154,167 @@ def builder_dialog_html_view(request, dialog): # pylint: disable=unused-argument
     response['X-Frame-Options'] = 'SAMEORIGIN'
 
     return response
+
+@staff_member_required
+def dashboard_dialog_scripts(request):
+    context = {
+        'include_search': True
+    }
+
+    offset = int(request.GET.get('offset', '0'))
+    limit = int(request.GET.get('limit', '25'))
+    query = request.GET.get('q', None)
+    label = request.GET.get('label', None)
+
+    dialog_objects = DialogScript.objects.all()
+
+    if (query in (None, '')) is False:
+        search_query = Q(name__icontains=query) | Q(identifier__icontains=query) # pylint: disable=unsupported-binary-operation
+        search_query = search_query | Q(labels__icontains=query) | Q(definition__icontains=query) # pylint: disable=unsupported-binary-operation
+
+        dialog_objects = DialogScript.objects.filter(search_query)
+
+    if (label in (None, '')) is False:
+        label_query = Q(labels=label) | Q(labels__startswith='%s\n' % label) | Q(labels__contains=('\n%s\n' % label)) |  Q(labels__endswith='\n%s' % label) # pylint: disable=unsupported-binary-operation, superfluous-parens
+        label_query = label_query | Q(labels__contains=('|%s\n' % label)) | Q(labels__endswith='|%s' % label) # pylint: disable=unsupported-binary-operation, superfluous-parens
+
+        dialog_objects = dialog_objects.filter(label_query)
+
+    total = dialog_objects.count()
+
+    context['dialogs'] = dialog_objects.order_by('name')[offset:(offset + limit)]
+    context['total'] = total
+    context['start'] = offset + 1
+    context['end'] = offset + limit
+
+    if context['end'] > total:
+        context['end'] = total
+
+    if (offset - limit) >= 0:
+        context['previous'] = '%s?offset=%s&limit=%s' % (reverse('dashboard_dialog_scripts'), offset - limit, limit)
+
+    if (offset + limit) < total:
+        context['next'] = '%s?offset=%s&limit=%s' % (reverse('dashboard_dialog_scripts'), offset + limit, limit)
+
+    context['first'] = '%s?offset=0&limit=%s' % (reverse('dashboard_dialog_scripts'), limit)
+
+    last = int(total / limit) * limit
+
+    context['last'] = '%s?offset=%s&limit=%s' % (reverse('dashboard_dialog_scripts'), last, limit)
+
+    all_labels = []
+
+    for script in DialogScript.objects.all():
+        for label in script.labels_list():
+            cleaned_label = label.split('|')[-1]
+
+            if (cleaned_label in all_labels) is False:
+                all_labels.append(cleaned_label)
+
+    all_labels.sort()
+
+    context['labels'] = all_labels
+
+    return render(request, 'dashboard/dashboard_dialog_scripts.html', context=context)
+
+@staff_member_required
+def dashboard_dialog_create(request):
+    identifier = request.POST.get('identifier', None)
+    name = request.POST.get('name', None)
+
+    if None in (name, identifier):
+        payload = {
+            'message': 'Unable to create dialog script.'
+        }
+    else:
+        script = DialogScript.objects.filter(identifier=identifier).first()
+
+        if script is None:
+            payload = {
+                'message': 'Unable to locate dialog script to copy (%s).' % identifier
+            }
+        else:
+            new_id = slugify(name)
+
+            index = 1
+
+            while DialogScript.objects.filter(identifier=new_id).count() > 0:
+                new_id = slugify('%s %s' % (name, index))
+
+            script.pk = None
+            script.name = name
+            script.identifier = new_id
+
+            script.save()
+
+            payload = {
+                'message': 'New dialog script created.'
+            }
+
+    return HttpResponse(json.dumps(payload, indent=2), content_type='application/json', status=200)
+
+@staff_member_required
+def dashboard_dialog_delete(request):
+    identifier = request.POST.get('identifier', None)
+
+    deleted = DialogScript.objects.filter(identifier=identifier).delete()
+
+    payload = {
+        'message': '%s dialog script(s) deleted.' % deleted[0]
+    }
+
+    return HttpResponse(json.dumps(payload, indent=2), content_type='application/json', status=200)
+
+@staff_member_required
+def dashboard_dialog_start(request):
+    payload = {
+        'message': 'Unable to launch dialog.'
+    }
+
+    if request.method == 'POST':
+        identifier = request.POST.get('identifier', None)
+        destination = request.POST.get('destination', None)
+
+        interrupt_seconds = request.POST.get('interrupt_seconds', None)
+        pause_seconds = request.POST.get('pause_seconds', None)
+        timeout_seconds = request.POST.get('timeout_seconds', None)
+        dialog_variables = request.POST.get('dialog_variables', '').split('\n')
+
+        dialog_options = {}
+
+        if interrupt_seconds is not None and interrupt_seconds != '':
+            dialog_options['interrupt_minutes'] = float(interrupt_seconds) / 60
+
+        if pause_seconds is not None and pause_seconds != '':
+            dialog_options['pause_minutes'] = float(pause_seconds) / 60
+
+        if timeout_seconds is not None and timeout_seconds != '':
+            dialog_options['timeout_minutes'] = float(timeout_seconds) / 60
+
+        for variable in dialog_variables:
+            pair = variable.split('=')
+
+            if len(pair) > 1:
+                dialog_options[pair[0].strip()] = pair[1].strip()
+
+        started = False
+
+        for app in settings.INSTALLED_APPS:
+            try:
+                dialog_module = importlib.import_module('.dialog_api', package=app)
+
+                if dialog_module.launch_dialog_script(identifier, destination, dialog_options):
+                    started = True
+
+                    break
+            except ImportError:
+                pass
+            except AttributeError:
+                pass
+
+        if started:
+            payload = {
+                'message': 'Dialog launched.'
+            }
+
+    return HttpResponse(json.dumps(payload, indent=2), content_type='application/json', status=200)
