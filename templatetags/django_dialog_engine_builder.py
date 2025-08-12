@@ -1,4 +1,5 @@
 import json
+import logging
 
 from django import template
 from django.utils.text import slugify
@@ -7,6 +8,8 @@ register = template.Library()
 
 @register.filter
 def cytoscape_json(dialog):
+    logger = logging.getLogger()
+
     elements = []
 
     dialog_machine = dialog.dialog_machine()
