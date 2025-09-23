@@ -1,9 +1,9 @@
 # pylint: disable=no-member
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
-
 import importlib
+
+import six
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -37,7 +37,7 @@ class Command(BaseCommand):
             if InteractionCard.objects.filter(identifier=card[1]).count() == 0:
                 InteractionCard.objects.create(name=card[0], identifier=card[1], enabled=True)
 
-                print('Added %s...' % card[0])
+                six.print_('Added %s...' % card[0])
 
     for app in settings.INSTALLED_APPS:
         try:
@@ -49,7 +49,7 @@ class Command(BaseCommand):
                 if InteractionCard.objects.filter(identifier=card[1]).count() == 0:
                     InteractionCard.objects.create(name=card[0], identifier=card[1], enabled=True)
 
-                    print('Added %s from %s...' % (card[0], app))
+                    six.print_('Added %s from %s...' % (card[0], app))
 
         except ImportError:
             pass

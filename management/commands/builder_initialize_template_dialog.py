@@ -1,7 +1,7 @@
 # pylint: disable=no-member, line-too-long
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
+import six
 
 from django.core.management.base import BaseCommand
 
@@ -34,4 +34,4 @@ class Command(BaseCommand):
         if script is None:
             DialogScript.objects.create(identifier='default', name='Default Dialog Template', definition=TEMPLATE_DIALOG)
 
-            print('Added default "Hello World" dialog.')
+            six.print_('Added default "Hello World" dialog.')
