@@ -1,8 +1,6 @@
 # pylint: disable=no-member, line-too-long
 # -*- coding: utf-8 -*-
 
-from builtins import str # pylint: disable=redefined-builtin
-
 import importlib
 import json
 import os
@@ -28,7 +26,7 @@ from .models import InteractionCard
 def builder_dialog(request, dialog): # pylint: disable=unused-argument
     context = {}
 
-    context['dialog'] = DialogScript.objects.filter(pk=str(dialog)).first()
+    context['dialog'] = DialogScript.objects.filter(pk=int(dialog)).first()
 
     card_modules = []
     card_types = []
@@ -61,7 +59,7 @@ def builder_dialog(request, dialog): # pylint: disable=unused-argument
 @never_cache
 @staff_member_required
 def builder_dialog_definition_json(request, dialog): # pylint: disable=unused-argument
-    dialog_script = DialogScript.objects.filter(pk=str(dialog)).first()
+    dialog_script = DialogScript.objects.filter(pk=int(dialog)).first()
 
     return HttpResponse(json.dumps(dialog_script.definition, indent=2), content_type='application/json', status=200)
 
