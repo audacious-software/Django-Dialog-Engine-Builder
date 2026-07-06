@@ -1,3 +1,4 @@
+/* global $, define */
 
 define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
   const isLiteralObject = function (a) {

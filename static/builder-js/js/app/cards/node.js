@@ -1,3 +1,5 @@
+/* global $, define */
+
 define(['material', 'jquery'], function (mdc) {
   class Node {
     constructor (definition, dialog) {

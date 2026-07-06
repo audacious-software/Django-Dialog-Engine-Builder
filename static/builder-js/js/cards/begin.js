@@ -1,3 +1,5 @@
+/* global $, define */
+
 define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
   class StartDialogNode extends Node {
     constructor (definition, dialog) {

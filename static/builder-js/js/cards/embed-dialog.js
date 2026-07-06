@@ -1,3 +1,5 @@
+/* global $, define */
+
 define(['material', 'cards/node', 'jquery'], function (mdc, Node) {
   class EmbedDialogNode extends Node {
     editBody () {
