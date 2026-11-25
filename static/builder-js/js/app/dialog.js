@@ -297,50 +297,52 @@ define(modules, function (mdc, Node) {
     }
 
     initializeDestinationMenu (cardId, onSelect) {
+      console.log(`initializeDestinationMenu: ${cardId}`)
+
       const me = this
 
       window.setTimeout(function () {
-        $('.dialog_card_selection_menu .mdc-list-item').off('click')
+        const addCardClickListener = (event) => {
+          console.log('event')
+          console.log(event)
 
-        const options = document.querySelectorAll('.dialog_card_selection_menu .mdc-list-item')
+          const prevent = event.currentTarget.classList.contains('prevent-menu-close')
 
-        for (const option of options) {
-          option.addEventListener('click', (event) => {
-            const prevent = event.currentTarget.classList.contains('prevent-menu-close')
+          if (prevent) {
+            event.stopPropagation()
 
-            if (prevent) {
-              event.stopPropagation()
+            const categoryName = $(event.currentTarget).attr('data-category-name')
 
-              const categoryName = $(event.currentTarget).attr('data-category-name')
+            const icon = $(event.currentTarget).find('.destination_disclosure_icon').html()
 
-              const icon = $(event.currentTarget).find('.destination_disclosure_icon').html()
+            const expanded = (icon === 'arrow_drop_down')
 
-              const expanded = (icon === 'arrow_drop_down')
+            $('.dialog_card_selection_menu .builder-destination-item').hide()
 
-              $('.dialog_card_selection_menu .builder-destination-item').hide()
+            $('.dialog_card_selection_menu .destination_disclosure_icon').html('arrow_right')
 
-              $('.dialog_card_selection_menu .destination_disclosure_icon').html('arrow_right')
+            if (expanded === false) {
+              $(event.currentTarget).find('.destination_disclosure_icon').html('arrow_drop_down')
 
-              if (expanded === false) {
-                $(event.currentTarget).find('.destination_disclosure_icon').html('arrow_drop_down')
-
-                $('.dialog_card_selection_menu [data-category="' + categoryName + '"]').show()
-              }
-            } else {
-              const nodeId = $(event.currentTarget).attr('data-node-id')
-
-              let id = event.currentTarget.id
-
-              id = id.replace(cardId + '_destination_item_', '')
-
-              if (id === 'add_card') {
-                me.addCard(onSelect)
-              } else {
-                onSelect(nodeId)
-              }
+              $('.dialog_card_selection_menu [data-category="' + categoryName + '"]').show()
             }
-          })
+          } else {
+            const nodeId = $(event.currentTarget).attr('data-node-id')
+
+            let id = event.currentTarget.id
+
+            id = id.replace(cardId + '_destination_item_', '')
+
+            if (id === 'add_card') {
+              me.addCard(onSelect)
+            } else {
+              onSelect(nodeId)
+            }
+          }
         }
+
+        $('.dialog_card_selection_menu .mdc-list-item').off('click')
+        $('.dialog_card_selection_menu .mdc-list-item').on('click', addCardClickListener)
 
         $('.builder-destination-item').hide()
       }, 500)
@@ -355,6 +357,8 @@ define(modules, function (mdc, Node) {
 
       const listener = {
         handleEvent: function (event) {
+          window.dialogBuilder.addCardDialog.unlisten('MDCDialog:closed', this)
+
           if (event.detail.action === 'add_card') {
             const cardName = $('#add-card-name-value').val()
 
@@ -373,8 +377,6 @@ define(modules, function (mdc, Node) {
             }
 
             callback(cardDef.id)
-
-            window.dialogBuilder.addCardDialog.unlisten('MDCDialog:closed', this)
           }
         }
       }

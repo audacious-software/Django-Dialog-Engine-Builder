@@ -66,6 +66,28 @@ requirejs(['material', 'app/dialog', 'cookie', 'cards/node', 'jquery'], function
       selectedDialog.removeChangeListener(onDialogChanged)
     }
 
+    let foundEnd = false
+
+    for (const node of definition) {
+      console.log('Node')
+      console.log(node)
+
+      if (node['type'] === 'end') {
+        foundEnd = true
+      }
+    }
+
+    if (foundEnd === false) {
+      definition.push({
+        id: 'dialog-end',
+        name: 'Dialog End',
+        type: 'end',
+        builder_group: 'Dialog'
+      })
+
+      dialogIsDirty = true
+    }
+
     selectedDialog = dialog.loadDialog(definition)
     selectedDialog.name = window.dialogBuilder.name
 
