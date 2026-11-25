@@ -69,10 +69,7 @@ requirejs(['material', 'app/dialog', 'cookie', 'cards/node', 'jquery'], function
     let foundEnd = false
 
     for (const node of definition) {
-      console.log('Node')
-      console.log(node)
-
-      if (node['type'] === 'end') {
+      if (node.type === 'end') {
         foundEnd = true
       }
     }

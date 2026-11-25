@@ -297,15 +297,10 @@ define(modules, function (mdc, Node) {
     }
 
     initializeDestinationMenu (cardId, onSelect) {
-      console.log(`initializeDestinationMenu: ${cardId}`)
-
       const me = this
 
       window.setTimeout(function () {
         const addCardClickListener = (event) => {
-          console.log('event')
-          console.log(event)
-
           const prevent = event.currentTarget.classList.contains('prevent-menu-close')
 
           if (prevent) {
